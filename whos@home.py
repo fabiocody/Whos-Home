@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import subprocess, sys, json, time
+import subprocess, sys, json, time, os
 
 # Color class used to print colors
 class colors:
@@ -20,9 +20,11 @@ if len(sys.argv) < 2:
 	exit()
 interface = sys.argv[1]
 
+script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
+
 # Open JSON
 try:
-	people_file = open('people.json', 'r')
+	people_file = open(script_path + 'people.json', 'r')
 	people_json = json.load(people_file)
 except:
 	print(colors.RED + 'ERROR opening people.json' + colors.END)
@@ -42,6 +44,7 @@ def execute_process(bash_command):
 arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
 	output = execute_process(arp_command)
+	file = open(script_path + 'people.txt', 'w')
 	for line in output.stdout.readlines():
 		line = line.decode('utf8')
 		for split in line.split():
@@ -56,7 +59,10 @@ while True:
 		if person['lastSeen'] < max_cycles:
 			person['lastSeen'] += 1
 			print(colors.GREEN + person['name'] + ' is @ home ' + colors.END)
+			file.write(person['name'] + ' is @ home \n')
 		else:
 			print(colors.PURPLE + person['name'] + ' is away ' + colors.END)
+			file.write(person['name'] + ' is away \n')
+	file.close()
 	time.sleep(30)
 	print()
