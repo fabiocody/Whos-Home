@@ -1,4 +1,4 @@
-# Whos-Home
+# Whos@Home
 
 This tool analyze the arp table (using arp-scan) to determine who is at home (i.e.: connected to the local network).
 
