@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+print('Loading...')
+
 import subprocess, sys, json, time, os
 
 # Color class used to print colors
@@ -33,8 +35,13 @@ except:
 # Make people list
 max_cycles = 30
 people = []
+allowed = '1234567890abcdef:'
 for person_dict in people_json['people']:
 	person_dict['target'] = person_dict['target'].lower()
+	for c in person_dict['target']:
+		if c not in allowed:
+			print(colors.RED + 'ERROR: invalid character found in one or more MAC addresses' + colors.END)
+			exit()
 	people.append(person_dict)
 for person_dict in people:
 	person_dict['lastSeen'] = max_cycles
@@ -45,6 +52,7 @@ def execute_process(bash_command):
 # Main cycle,
 arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
+	print()
 	output = execute_process(arp_command)
 	file = open(script_path + 'people.txt', 'w')  # Write output to a txt file to make presence data available to other programs
 	for line in output.stdout.readlines():
@@ -65,4 +73,3 @@ while True:
 			file.write(person['name'] + ' is away \n')
 	file.close()
 	time.sleep(30)
-	print()
