@@ -42,6 +42,8 @@ for person_dict in people_json['people']:
 		if c not in allowed:
 			print(colors.RED + 'ERROR: invalid character found in one or more MAC addresses' + colors.END)
 			exit()
+	if len(person_dict['target']) == 17:
+		person_dict['target'] = person_dict['target'][9:]
 	people.append(person_dict)
 for person_dict in people:
 	person_dict['lastSeen'] = max_cycles
