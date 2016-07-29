@@ -21,7 +21,7 @@ output_file_mode = 'no'
 output_filename = ''
 if len(sys.argv) != 4 and len(sys.argv) != 2:
 	print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options]' + colors.END)
+	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options | filename]' + colors.END)
 	exit()
 else:
 	interface = sys.argv[1]
@@ -40,7 +40,7 @@ else:
 				exit()
 		else:
 			print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options]' + colors.END)
+			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options | filename]' + colors.END)
 			exit()
 
 script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
