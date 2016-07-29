@@ -17,21 +17,30 @@ class colors:
 
 # Analyze argv to extract interface
 interface = ''
-json_output = False
-json_output_filename = ''
+output_file_mode = 'no'
+output_filename = ''
 if len(sys.argv) != 4 and len(sys.argv) != 2:
 	print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface + [options]' + colors.END)
+	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options]' + colors.END)
 	exit()
 else:
 	interface = sys.argv[1]
 	if len(sys.argv) == 4:
-		if sys.argv[2] == '-o':
-			json_output = True
-			json_output_filename = sys.argv[3]
+		if sys.argv[2] == '-j':
+			output_file_mode = 'json'
+			output_filename = sys.argv[3]
+			if output_filename[-4:] != output_file_mode:
+				print(colors.RED + 'ERROR: file extension' + colors.END)
+				exit()
+		elif sys.argv[2] == '-t':
+			output_file_mode = 'txt'
+			output_filename = sys.argv[3]
+			if output_filename[-3:] != output_file_mode:
+				print(colors.RED + 'ERROR: file extension' + colors.END)
+				exit()
 		else:
 			print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface + [options]' + colors.END)
+			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options]' + colors.END)
 			exit()
 
 script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -68,7 +77,8 @@ arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
 	print()
 	output = execute_process(arp_command)
-	file = open(script_path + 'people.txt', 'w')  # Write output to a txt file to make presence data available to other programs
+	if output_file_mode != 'no':
+		file = open(output_filename, 'w')
 	for line in output.stdout.readlines():
 		line = line.decode('utf8')
 		for split in line.split():
@@ -76,14 +86,20 @@ while True:
 				mac =  split[9:]    # Only the last 3 bytes of the MAC address are taken into account, to ensure compatibility with some network devices which may change the vendor part of MAC addresses
 				for person in people:
 					if mac == person['target']:
-						person['lastSeen'] = -1    # The counter is set to -1 because every counter will be incremented in the next for cycle
+						person['lastSeen'] = -1    # The counter is set to -1 because every counter will be incremented in the next 'for' cycle
 	for person in people:
 		if person['lastSeen'] < max_cycles:
 			person['lastSeen'] += 1
 			print(colors.GREEN + person['name'] + ' is @ home ' + colors.END)
-			file.write(person['name'] + ' is @ home \n')
+			if output_file_mode == 'txt':
+				file.write(person['name'] + ' is @ home \n')
 		else:
 			print(colors.PURPLE + person['name'] + ' is away ' + colors.END)
-			file.write(person['name'] + ' is away \n')
-	file.close()
+			if output_file_mode == 'txt':
+				file.write(person['name'] + ' is away \n')
+
+	if output_file_mode != 'no':
+		if output_file_mode == 'json':
+			json.dump(people, file)
+		file.close()
 	time.sleep(30)
