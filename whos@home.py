@@ -15,13 +15,21 @@ class colors:
 	UNDERLINE = '\033[4m'
 	END = '\033[0m'
 
+def print_help():
+	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options | filename]')
+	print('Options:')
+	print('    -t | txt file output')
+	print('    -j | json file output')
+	print('    -o | txt and json file output (don\'t write file extension in filename)' + colors.END)
+
+
 # Analyze argv to extract interface
 interface = ''
 output_file_mode = 'no'
 output_filename = ''
 if len(sys.argv) != 4 and len(sys.argv) != 2:
 	print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options | filename]' + colors.END)
+	print_help()
 	exit()
 else:
 	interface = sys.argv[1]
@@ -38,9 +46,12 @@ else:
 			if output_filename[-3:] != output_file_mode:
 				print(colors.RED + 'ERROR: file extension' + colors.END)
 				exit()
+		elif sys.argv[2] == '-o':
+			output_file_mode = 'both'
+			output_filename = sys.argv[3]
 		else:
 			print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface [options | filename]' + colors.END)
+			print_help()
 			exit()
 
 script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -77,8 +88,14 @@ arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
 	print()
 	output = execute_process(arp_command)
+	#file_txt = ''
+	#file_json = ''
 	if output_file_mode != 'no':
-		file = open(output_filename, 'w')
+		if output_file_mode != 'both':
+			file = open(output_filename, 'w')
+		else:
+			file_txt = open(output_filename + '.txt', 'w')
+			file_json = open(output_filename + '.json', 'w')
 	for line in output.stdout.readlines():
 		line = line.decode('utf8')
 		for split in line.split():
@@ -92,14 +109,24 @@ while True:
 			person['lastSeen'] += 1
 			print(colors.GREEN + person['name'] + ' is @ home ' + colors.END)
 			if output_file_mode == 'txt':
-				file.write(person['name'] + ' is @ home \n')
+				file.write(person['name'] + ' is @ home\n')
+			elif output_file_mode == 'both':
+				file_txt.write(person['name'] + ' is @ home\n')
 		else:
 			print(colors.PURPLE + person['name'] + ' is away ' + colors.END)
 			if output_file_mode == 'txt':
 				file.write(person['name'] + ' is away \n')
+			elif output_file_mode == 'both':
+				file_txt.write(person['name'] + ' is away \n')
 
 	if output_file_mode != 'no':
 		if output_file_mode == 'json':
 			json.dump(people, file)
-		file.close()
+		elif output_file_mode == 'both':
+			json.dump(people, file_json)
+		try:
+			file_txt.close()
+			file_json.close()
+		except:
+			file.close()
 	time.sleep(30)
