@@ -16,11 +16,23 @@ class colors:
 	END = '\033[0m'
 
 # Analyze argv to extract interface
-if len(sys.argv) < 2:
+interface = ''
+json_output = False
+json_output_filename = ''
+if len(sys.argv) != 4 and len(sys.argv) != 2:
 	print(colors.RED + 'ERROR: wrong arguments' + colors.END)
-	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface' + colors.END)
+	print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface + [options]' + colors.END)
 	exit()
-interface = sys.argv[1]
+else:
+	interface = sys.argv[1]
+	if len(sys.argv) == 4:
+		if sys.argv[2] == '-o':
+			json_output = True
+			json_output_filename = sys.argv[3]
+		else:
+			print(colors.RED + 'ERROR: wrong arguments' + colors.END)
+			print(colors.YELLOW + 'Usage:    ' + sys.argv[0] + ' interface + [options]' + colors.END)
+			exit()
 
 script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
 
