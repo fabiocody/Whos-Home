@@ -56,7 +56,7 @@ else:
 
 script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
 
-# Open JSON
+# Open people.json
 try:
 	people_file = open(script_path + 'people.json', 'r')
 	people_json = json.load(people_file)
@@ -82,14 +82,26 @@ for person_dict in people:
 
 def execute_process(bash_command):
     return subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+    
+def create_json(file):
+	json_obj = []
+	for person in people:
+		temp_dict = {}
+		temp_dict['name'] = person['name']
+		temp_dict['target'] = person['target']
+		if person['lastSeen'] < max_cycles:
+			temp_dict['home'] = True
+		else:
+			temp_dict['home'] = False
+		json_obj.append(temp_dict)
+	json.dump(json_obj, file)
+			
 
 # Main cycle,
 arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
 	print()
 	output = execute_process(arp_command)
-	#file_txt = ''
-	#file_json = ''
 	if output_file_mode != 'no':
 		if output_file_mode != 'both':
 			file = open(output_filename, 'w')
@@ -121,9 +133,9 @@ while True:
 
 	if output_file_mode != 'no':
 		if output_file_mode == 'json':
-			json.dump(people, file)
+			create_json(file)
 		elif output_file_mode == 'both':
-			json.dump(people, file_json)
+			create_json(file_json)
 		try:
 			file_txt.close()
 			file_json.close()
