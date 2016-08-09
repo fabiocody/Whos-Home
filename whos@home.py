@@ -49,6 +49,9 @@ else:
 		elif sys.argv[2] == '-o':
 			output_file_mode = 'both'
 			output_filename = sys.argv[3]
+			if output_filename == "people":
+				print(colors.RED + 'ERROR: invalid name' + colors.END)
+				exit()
 		else:
 			print(colors.RED + 'ERROR: wrong arguments' + colors.END)
 			print_help()
