@@ -23,7 +23,7 @@ def print_help():
 	print('    -o | txt and json file output (don\'t write file extension in filename)' + colors.END)
 
 
-# Analyze argv to extract interface
+# Analyze argv to extract interface and file output mode
 interface = ''
 output_file_mode = 'no'
 output_filename = ''
@@ -49,7 +49,7 @@ else:
 		elif sys.argv[2] == '-o':
 			output_file_mode = 'both'
 			output_filename = sys.argv[3]
-			if output_filename == "people":
+			if output_filename == "people":		# Refuse 'people' as filename to avoid conflicts with people.json (config file)
 				print(colors.RED + 'ERROR: invalid name' + colors.END)
 				exit()
 		else:
@@ -85,7 +85,7 @@ for person_dict in people:
 
 def execute_process(bash_command):
     return subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
-    
+
 def create_json(file):
 	json_obj = []
 	for person in people:
@@ -98,7 +98,7 @@ def create_json(file):
 			temp_dict['home'] = False
 		json_obj.append(temp_dict)
 	json.dump(json_obj, file)
-			
+
 
 # Main cycle,
 arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
