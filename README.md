@@ -23,12 +23,10 @@ A person is considered at home if the associated MAC address is found in the ARP
 ### people.json
 To make Whos@Home work, you have to provide a JSON file (located in the same directory as whos<i></i>@home.py) containing the target addresses (only the last 3 bytes) and the corresponding names. Here's an example of how it should look.
 ```json
-{
-  "people": [
+[
     { "name": "Bob", "target": "00:00:00" },
     { "name": "John", "target": "aa:bb:cc" }
-  ]
-}
+]
 ```
 Make sure you use colons as separators and lowercase letters in MAC addresses.
 

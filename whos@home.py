@@ -102,7 +102,7 @@ except:
 # Make people list
 people = list()
 allowed = '1234567890abcdef:'
-for person_dict in people_json['people']:
+for person_dict in people_json:
 	person_dict['target'] = person_dict['target'].lower()
 	for c in person_dict['target']:
 		if c not in allowed:
@@ -116,10 +116,8 @@ for person_dict in people:
 
 
 # Main cycle
-print(max_cycles)
 arp_command = 'sudo arp-scan --interface ' + interface + ' --localnet'
 while True:
-	print()
 	output = getstatusoutput(arp_command)[1]
 	if output_file_mode != 'no':
 		if output_file_mode != 'both':
@@ -148,6 +146,7 @@ while True:
 				file.write(person['name'] + ' is away \n')
 			elif output_file_mode == 'both':
 				file_txt.write(person['name'] + ' is away \n')
+	print()
 
 	if output_file_mode != 'no':
 		if output_file_mode == 'json':
