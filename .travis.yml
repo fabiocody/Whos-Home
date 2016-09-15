@@ -1,0 +1,9 @@
+language: python
+python:
+    - "3.4"
+    - "3.5"
+    - "nightly"
+install:
+    - "apt-get update && apt-get install arp-scan"
+    - "pip3 install telepot pylint"
+script: pylint *.py -E
