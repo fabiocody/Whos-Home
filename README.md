@@ -1,4 +1,5 @@
 # Whos@Home
+[![Build Status](https://travis-ci.org/fabiocody/Whos-Home.svg?branch=master)](https://travis-ci.org/fabiocody/Whos-Home)
 
 This tool analyze the arp table (using arp-scan) to determine who is at home (i.e.: connected to the local network).
 
