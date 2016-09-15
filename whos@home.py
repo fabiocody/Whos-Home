@@ -92,10 +92,7 @@ def create_json(file):
 		temp_dict = {}
 		temp_dict['name'] = person['name']
 		temp_dict['target'] = person['target']
-		if person['lastSeen'] < max_cycles:
-			temp_dict['home'] = True
-		else:
-			temp_dict['home'] = False
+		temp_dict['home'] = bool(person['lastSeen'] < max_cycles)
 		json_obj.append(temp_dict)
 	json.dump(json_obj, file)
 
@@ -115,7 +112,7 @@ while True:
 		line = line.decode('utf8')
 		for split in line.split():
 			if len(split) == 17:    # A MAC address is 17 characters long
-				mac =  split[9:]    # Only the last 3 bytes of the MAC address are taken into account, to ensure compatibility with some network devices which may change the vendor part of MAC addresses
+				mac = split[9:]    # Only the last 3 bytes of the MAC address are taken into account, to ensure compatibility with some network devices which may change the vendor part of MAC addresses
 				for person in people:
 					if mac == person['target']:
 						person['lastSeen'] = -1    # The counter is set to -1 because every counter will be incremented in the next 'for' cycle
