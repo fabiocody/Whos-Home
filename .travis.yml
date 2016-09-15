@@ -3,7 +3,10 @@ python:
     - "3.4"
     - "3.5"
     - "nightly"
+addons:
+    apt:
+        sources: ubuntu
+        packages: arp-scan
 install:
-    - "apt-get update && apt-get install arp-scan"
     - "pip3 install telepot pylint"
 script: pylint *.py -E
