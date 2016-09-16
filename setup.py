@@ -21,7 +21,7 @@ setup(
 		'Programming Language :: Python :: 3.4',
 		'Programming Language :: Python :: 3.5',
 	],
-	keywords = 'wifi, mac, home, arp',
+	keywords = 'whoshome, wifi, mac, home, arp',
 	py_modules = ['whoshome'],
 	entry_points={
         'console_scripts': [
