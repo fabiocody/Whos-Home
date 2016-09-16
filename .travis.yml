@@ -8,5 +8,5 @@ addons:
         sources: ubuntu
         packages: arp-scan
 install:
-    - "pip3 install telepot pylint"
-script: pylint *.py -E
+    - "pip3 install pylint"
+script: pylint ./whoshome/*.py -E
