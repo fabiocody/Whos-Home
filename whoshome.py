@@ -180,7 +180,7 @@ def parse_argv():
 
 
 
-script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
+#script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
 home_path = os.getenv('HOME') + '/'
 
 
@@ -191,6 +191,5 @@ def main():
 	wh.cycle()
 
 
-print(__name__)
 if __name__ == '__main__':
 	main()
