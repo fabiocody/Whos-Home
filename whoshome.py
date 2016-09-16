@@ -111,7 +111,7 @@ class Whoshome:
 				print('\nQuit')
 				exit()
 
-	def create_json(file):
+	def create_json(self, file):
 		json_obj = list()
 		for person in self._people:
 			temp_dict = dict()
