@@ -18,12 +18,11 @@ setup(
 	author_email = 'fabiocody@icloud.com',
 	licence = 'MIT',
 	classifiers = [
-		'Licence :: OSI Approved :: MIT',
 		'Programming Language :: Python :: 3.4',
 		'Programming Language :: Python :: 3.5',
 	],
 	keywords = 'wifi, mac, home, arp',
-	packages = ['whoshome'],
+	py_modules = ['whoshome'],
 	entry_points={
         'console_scripts': [
             'whoshome=whoshome:main',
