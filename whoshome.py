@@ -135,17 +135,17 @@ while True:
 	for person in people:
 		if person['lastSeen'] < max_cycles:
 			person['lastSeen'] += 1
-			print(Colors.GREEN + person['name'] + ' is @ home ' + Colors.END)
+			print(Colors.GREEN + person['name'] + ' is home  🏡' + Colors.END)
 			if output_file_mode == 'txt':
-				file.write(person['name'] + ' is @ home\n')
+				file.write(person['name'] + ' is home  🏡\n')
 			elif output_file_mode == 'both':
-				file_txt.write(person['name'] + ' is @ home\n')
+				file_txt.write(person['name'] + ' is home  🏡\n')
 		else:
-			print(Colors.PURPLE + person['name'] + ' is away ' + Colors.END)
+			print(Colors.PURPLE + person['name'] + ' is away  🌍' + Colors.END)
 			if output_file_mode == 'txt':
-				file.write(person['name'] + ' is away \n')
+				file.write(person['name'] + ' is away  🌍\n')
 			elif output_file_mode == 'both':
-				file_txt.write(person['name'] + ' is away \n')
+				file_txt.write(person['name'] + ' is away  🌍\n')
 	print()
 
 	if output_file_mode != 'no':
