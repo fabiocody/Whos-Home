@@ -34,17 +34,12 @@ class Whoshome:
 
 	def open_people_file(self):
 		try:
-			people_file = open(script_path + '.people.json', 'r')
+			people_file = open(home_path + '.people.json', 'r')
 			people_json = json.load(people_file)
 			people_file.close()
 		except:
-			try:
-				people_file = open(home_path + '.people.json', 'r')
-				people_json = json.load(people_file)
-				people_file.close()
-			except:
-				print(Colors.RED + 'ERROR opening .people.json' + Colors.END)
-				exit()
+			print(Colors.RED + 'ERROR opening .people.json' + Colors.END)
+			exit()
 		return people_json
 
 	def make_people_list(self, people_json):
@@ -196,5 +191,6 @@ def main():
 	wh.cycle()
 
 
+print(__name__)
 if __name__ == '__main__':
 	main()
