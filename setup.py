@@ -16,7 +16,7 @@ setup(
 	url = 'https://github.com/fabiocody/Whos-Home',
 	author = 'Fabio Codiglioni',
 	author_email = 'fabiocody@icloud.com',
-	licence = 'MIT',
+	license = 'MIT',
 	classifiers = [
 		'Programming Language :: Python :: 3.4',
 		'Programming Language :: Python :: 3.5',
