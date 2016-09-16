@@ -181,7 +181,8 @@ def parse_argv():
 
 
 #script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
-home_path = os.getenv('HOME') + '/'
+home_path = os.path.expanduser('~') + '/'
+
 
 
 
