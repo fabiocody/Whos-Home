@@ -193,8 +193,11 @@ home_path = os.getenv('HOME') + '/'
 
 
 
-
-if __name__ == '__main__':
+def main():
 	check_dependencies()
 	wh = Whoshome(parse_argv())
 	wh.cycle()
+
+
+if __name__ == '__main__':
+	main()
