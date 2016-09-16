@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md')) as f:
 
 setup(
 	name = 'whoshome',
-	version = '1.0.0',
+	version = '1.1.2',
 	description = 'Find out who\'s home based on Wi-Fi connection',
 	long_description = long_description,
 	url = 'https://github.com/fabiocody/Whos-Home',
