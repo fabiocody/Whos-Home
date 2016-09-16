@@ -78,17 +78,17 @@ class Whoshome:
 			for person in self._people:
 				if person['last_seen'] < self._max_cycles:
 					person['last_seen'] += 1
-					print(Colors.GREEN + person['name'] + ' is home' + Colors.END)
+					print(Colors.GREEN + '🏡 ' + person['name'] + ' is home' + Colors.END)
 					if self._output_file_mode == 'txt':
-						file.write(person['name'] + ' is home\n')
+						file.write('🏡 ' + person['name'] + ' is home\n')
 					elif self._output_file_mode == 'both':
-						file_txt.write(person['name'] + ' is home\n')
+						file_txt.write('🏡 ' + person['name'] + ' is home\n')
 				else:
-					print(Colors.PURPLE + person['name'] + ' is away' + Colors.END)
+					print(Colors.PURPLE + '🌍 ' + person['name'] + ' is away' + Colors.END)
 					if self._output_file_mode == 'txt':
-						file.write(person['name'] + ' is away\n')
+						file.write('🌍 ' + person['name'] + ' is away\n')
 					elif self._output_file_mode == 'both':
-						file_txt.write(person['name'] + ' is away\n')
+						file_txt.write('🌍 ' + person['name'] + ' is away\n')
 			print()
 			if self._output_file_mode != 'no':
 				if self._output_file_mode == 'json':
