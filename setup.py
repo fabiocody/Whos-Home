@@ -5,8 +5,11 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.md')) as f:
-    long_description = f.read()
+try:
+	with open(path.join(here, 'README.md')) as f:
+    	long_description = f.read()
+except:
+	long_description = ''
 
 setup(
 	name = 'whoshome',
