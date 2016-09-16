@@ -97,9 +97,9 @@ class Whoshome:
 			print()
 			if self._output_file_mode != 'no':
 				if self._output_file_mode == 'json':
-					create_json(file)
+					self.create_json(file)
 				elif self._output_file_mode == 'both':
-					create_json(file_json)
+					self.create_json(file_json)
 				try:
 					file_txt.close()
 					file_json.close()
@@ -111,6 +111,16 @@ class Whoshome:
 				print('\nQuit')
 				exit()
 
+	def create_json(file):
+		json_obj = list()
+		for person in self._people:
+			temp_dict = dict()
+			temp_dict['name'] = person['name']
+			temp_dict['target'] = person['target']
+			temp_dict['home'] = bool(person['last_seen'] < self._max_cycles)
+			json_obj.append(temp_dict)
+		json.dump(json_obj, file)
+
 
 
 
@@ -121,19 +131,6 @@ def print_help():
 	print('    -j | json file output')
 	print('    -o | txt and json file output (don\'t write file extension in filename)')
 	print('The developer declines every responsibility in case of malfunction due to non observance of this tiny guide' + Colors.END)
-
-
-
-
-def create_json(file):
-	json_obj = list()
-	for person in people:
-		temp_dict = dict()
-		temp_dict['name'] = person['name']
-		temp_dict['target'] = person['target']
-		temp_dict['home'] = bool(person['last_seen'] < max_cycles)
-		json_obj.append(temp_dict)
-	json.dump(json_obj, file)
 
 
 
