@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 try:
 	with open(path.join(here, 'README.md')) as f:
-    	long_description = f.read()
+		long_description = f.read()
 except:
 	long_description = ''
 
