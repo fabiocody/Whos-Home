@@ -9,4 +9,4 @@ addons:
         packages: arp-scan
 install:
     - "pip3 install pylint"
-script: pylint ./whoshome/*.py -E
+script: pylint *.py -E
