@@ -6,27 +6,27 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 try:
-	with open(path.join(here, 'README.md')) as f:
-		long_description = f.read()
+    with open(path.join(here, 'README.md')) as f:
+        long_description = f.read()
 except:
-	long_description = ''
+    long_description = ''
 
 setup(
-	name = 'whoshome',
-	version = '1.2.2',
-	description = 'Find out who\'s home based on Wi-Fi connection',
-	long_description = long_description,
-	url = 'https://github.com/fabiocody/Whos-Home',
-	author = 'Fabio Codiglioni',
-	author_email = 'fabiocody@icloud.com',
-	license = 'MIT',
-	classifiers = [
-		'Programming Language :: Python :: 3.4',
-		'Programming Language :: Python :: 3.5',
-	],
-	keywords = 'whoshome, wifi, mac, home, arp',
-	py_modules = ['whoshome'],
-	entry_points={
+    name='whoshome',
+    version='1.2.3',
+    description='Find out who\'s home based on Wi-Fi connection',
+    long_description=long_description,
+    url='https://github.com/fabiocody/Whos-Home',
+    author='Fabio Codiglioni',
+    author_email='fabiocody@icloud.com',
+    license='MIT',
+    classifiers=[
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+    ],
+    keywords='whoshome, wifi, mac, home, arp',
+    py_modules=['whoshome'],
+    entry_points={
         'console_scripts': [
             'whoshome=whoshome:main',
         ],
