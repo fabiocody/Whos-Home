@@ -40,6 +40,7 @@ class Whoshome:
                 people_file = open(home_path + '.people.json', 'r')
                 people_json = json.load(people_file)
                 people_file.close()
+                break
             except:
                 pass
         if people_json == None:
