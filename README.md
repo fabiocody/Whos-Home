@@ -3,23 +3,7 @@
 
 This tool analyze the arp table (using arp-scan) to determine who is at home (i.e.: connected to the local network).
 
-
-### Before using
-Make sure you have `arp-scan` installed.
-On Debian-like systems:
-```
-sudo apt-get update && sudo apt-get install arp-scan
-```
-
-On macOS (Homebrew):
-```
-brew install arp-scan
-```
-
-### How to install
-```
-pip3 install whoshome
-```
+*Who's Home* works only in Python3.
 
 ### How does it work?
 *Who's Home* send an ARP-request to every possible address of your local network; the resulting ARP Table is then parsed, looking for MAC addresses (of which only the last three bytes are taken into account, to ensure compatibility with some network devices that may change the vendor part of the address, e.g.: Wi-Fi repeaters). This is done every 30 seconds.

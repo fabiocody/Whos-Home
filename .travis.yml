@@ -3,13 +3,9 @@ python:
 - '3.4'
 - '3.5'
 - nightly
-addons:
-  apt:
-    sources: ubuntu
-    packages: arp-scan
 install:
-- pip3 install pylint
-script: pylint *.py -E
+- pip3 install pylint scapy-python3
+script: python setup.py install && pylint *.py -E
 deploy:
   provider: pypi
   user: fabiocody
