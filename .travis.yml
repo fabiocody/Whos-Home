@@ -3,6 +3,7 @@ python:
 - '3.4'
 - '3.5'
 - nightly
+sudo: required
 install:
 - pip3 install pylint scapy-python3
 script: python setup.py install && pylint *.py -E
