@@ -5,6 +5,11 @@ This tool analyze the arp table (using arp-scan) to determine who is at home (i.
 
 *Who's Home* works only in Python3.
 
+### How to install
+```
+pip3 install whoshome
+```
+
 ### How does it work?
 *Who's Home* send an ARP-request to every possible address of your local network; the resulting ARP Table is then parsed, looking for MAC addresses (of which only the last three bytes are taken into account, to ensure compatibility with some network devices that may change the vendor part of the address, e.g.: Wi-Fi repeaters). This is done every 30 seconds.
 A person is considered at home if the associated MAC address is found in the ARP table, or if it has been less than 15 minutes since the last time it was found. The reason for this is that *Who's Home* requires that the devices being monitored are connected to the local network. iPhones (and probably others) deliberately disconnect from the network once the screen is turned off to save power, meaning just because the device isn't connected, it doesn't mean that the devices owner isn't at home. Fortunately, iPhones (and probably others) periodically reconnect to the network to check for updates, emails, etc. This program works by keeping track of the last time a device was seen, and comparing that to a threshold value. I've found that a threshold of 15 minutes seems to work well for iPhone, but for different phones this may or may not work.
