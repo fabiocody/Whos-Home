@@ -13,7 +13,7 @@ except:
 
 setup(
     name='whoshome',
-    version='1.2.3',
+    version='1.3.0',
     description='Find out who\'s home based on Wi-Fi connection',
     long_description=long_description,
     url='https://github.com/fabiocody/Whos-Home',
@@ -26,6 +26,7 @@ setup(
     ],
     keywords='whoshome, wifi, mac, home, arp',
     py_modules=['whoshome'],
+    install_requires=['scapy-python3'],
     entry_points={
         'console_scripts': [
             'whoshome=whoshome:main',

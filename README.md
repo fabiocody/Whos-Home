@@ -3,18 +3,8 @@
 
 This tool analyze the arp table (using arp-scan) to determine who is at home (i.e.: connected to the local network).
 
-
-### Before using
-Make sure you have `arp-scan` installed.
-On Debian-like systems:
-```
-sudo apt-get update && sudo apt-get install arp-scan
-```
-
-On macOS (Homebrew):
-```
-brew install arp-scan
-```
+**IMPORTANT**
+*Who's Home* works only in Python3.
 
 ### How to install
 ```
