@@ -5,7 +5,8 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
-from scapy.all import *
+from scapy.all import ARP
+from scapy.layers.l2 import arping
 from getpass import getuser
 import platform
 from pwd import getpwall
