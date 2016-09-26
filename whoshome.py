@@ -5,6 +5,7 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
+from scapy.all import *
 
 
 # Color class used to print colors
@@ -26,9 +27,9 @@ class Whoshome:
         self._output_file_mode = args[1]
         self._output_filename = args[2]
         self._max_cycles = args[3]
-        self._people = self.make_people_list(self.open_people_file())
+        self._people = self._make_people_list(self._open_people_file())
 
-    def open_people_file(self):
+    def _open_people_file(self):
         try:
             people_file = open(home_path + '.people.json', 'r')
             people_json = json.load(people_file)
@@ -38,7 +39,7 @@ class Whoshome:
             exit(1)
         return people_json
 
-    def make_people_list(self, people_json):
+    def _make_people_list(self, people_json):
         people = list()
         allowed = '1234567890abcdef:'
         for person_dict in people_json:
@@ -54,28 +55,38 @@ class Whoshome:
             person['last_seen'] = self._max_cycles
         return people
 
+    def _create_json(self, file):
+        json_obj = list()
+        for person in self._people:
+            temp_dict = dict()
+            temp_dict['name'] = person['name']
+            temp_dict['target'] = person['target']
+            temp_dict['home'] = bool(person['last_seen'] < self._max_cycles)
+            json_obj.append(temp_dict)
+        json.dump(json_obj, file)
+
+    def _get_ip_from_interface(self):
+        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
+        return output[output.find('inet') + 5 : output.find('brd') - 1]
+
     def cycle(self):
-        arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
+        #arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
         while True:
-            output = getstatusoutput(arp_command)[1]
+            #output = getstatusoutput(arp_command)[1]
+            results, unanswered = arping('192.168.1.0/24', verbose=False)
             if self._output_file_mode != 'no':
                 if self._output_file_mode != 'both':
                     file = open(self._output_filename, 'w')
                 else:
                     file_txt = open(self._output_filename + '.txt', 'w')
                     file_json = open(self._output_filename + '.json', 'w')
-            for line in output.split('\n'):
-                for split in line.split():
-                    if len(split) == 17:    # A MAC address is 17 characters long
-                        # Only the last 3 bytes of the MAC address are taken into account, to
-                        # ensure compatibility with some network devices which may change the
-                        # vendor part of MAC addresses
-                        mac = split[9:]
-                        for person in self._people:
-                            if mac == person['target']:
-                                # The counter is set to -1 because every counter will be incremented
-                                # in the next 'for' cycle
-                                person['last_seen'] = -1
+            for result in results:
+                # A MAC address is 17 characters long. Only the last 3 bytes of the MAC address are taken into account, to ensure compatibility with some network devices which may change the vendor part of MAC addresses
+                mac = result[1][ARP].hwsrc[9:]
+                for person in self._people:
+                    if mac == person['target']:
+                        # The counter is set to -1 because every counter will be incremented in the next 'for' cycle
+                        person['last_seen'] = -1
             for person in self._people:
                 if person['last_seen'] < self._max_cycles:
                     person['last_seen'] += 1
@@ -93,29 +104,20 @@ class Whoshome:
             print()
             if self._output_file_mode != 'no':
                 if self._output_file_mode == 'json':
-                    self.create_json(file)
+                    self._create_json(file)
                 elif self._output_file_mode == 'both':
-                    self.create_json(file_json)
+                    self._create_json(file_json)
                 try:
                     file_txt.close()
                     file_json.close()
                 except:
                     file.close()
+            
             try:
                 sleep(30)
             except KeyboardInterrupt:
                 print('\nQuit')
                 exit(0)
-
-    def create_json(self, file):
-        json_obj = list()
-        for person in self._people:
-            temp_dict = dict()
-            temp_dict['name'] = person['name']
-            temp_dict['target'] = person['target']
-            temp_dict['home'] = bool(person['last_seen'] < self._max_cycles)
-            json_obj.append(temp_dict)
-        json.dump(json_obj, file)
 
 
 def print_help():
@@ -127,10 +129,12 @@ def print_help():
     print('The developer declines every responsibility in case of malfunction due to non observance of this tiny guide' + Colors.END)
 
 
+"""
 def check_dependencies():		# Check if arp-scan is installed
     if os.system('type arp-scan 1>/dev/null 2>/dev/null'):
         print(Colors.RED + 'ERROR: arp-scan not installed' + Colors.END)
         exit(1)
+"""
 
 
 def parse_argv():
@@ -178,7 +182,7 @@ home_path = os.path.expanduser('~') + '/'
 
 
 def main():
-    check_dependencies()
+    # check_dependencies()
     wh = Whoshome(parse_argv())
     wh.cycle()
 
