@@ -5,7 +5,7 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
-from scapy.all import *
+from scapy.all import arping
 from getpass import getuser
 
 
@@ -74,7 +74,7 @@ class Whoshome:
         #arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
         while True:
             #output = getstatusoutput(arp_command)[1]
-            results, unanswered = arping(self._get_ip_from_interface(self._interface), verbose=False)
+            results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
             if self._output_file_mode != 'no':
                 if self._output_file_mode != 'both':
                     file = open(self._output_filename, 'w')
