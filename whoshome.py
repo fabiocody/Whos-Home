@@ -35,7 +35,7 @@ class Whoshome:
             people_file.close()
         except:
             print(Colors.RED + 'ERROR opening .people.json' + Colors.END)
-            exit()
+            exit(1)
         return people_json
 
     def make_people_list(self, people_json):
@@ -46,7 +46,7 @@ class Whoshome:
             for c in person_dict['target']:
                 if c not in allowed:
                     print(Colors.RED + 'ERROR: invalid character found in one or more MAC addresses' + Colors.END)
-                    exit()
+                    exit(1)
             if len(person_dict['target']) == 17:
                 person_dict['target'] = person_dict['target'][9:]
             people.append(person_dict)
@@ -105,7 +105,7 @@ class Whoshome:
                 sleep(30)
             except KeyboardInterrupt:
                 print('\nQuit')
-                exit()
+                exit(0)
 
     def create_json(self, file):
         json_obj = list()
@@ -130,7 +130,7 @@ def print_help():
 def check_dependencies():		# Check if arp-scan is installed
     if os.system('type arp-scan 1>/dev/null 2>/dev/null'):
         print(Colors.RED + 'ERROR: arp-scan not installed' + Colors.END)
-        exit()
+        exit(1)
 
 
 def parse_argv():
@@ -142,11 +142,11 @@ def parse_argv():
     if argc < 2 or argc > 5:
         print(Colors.RED + 'ERROR: wrong arguments' + Colors.END)
         print_help()
-        exit()
+        exit(1)
     else:
         if argv[1] == '-h' or argv[1] == '--help':
             print_help()
-            exit()
+            exit(1)
         interface = argv[1]
         if argc % 2:
             max_cycles = int(argv[argc - 1])
@@ -156,20 +156,20 @@ def parse_argv():
                 output_filename = argv[3]
                 if output_filename[-4:] != output_file_mode:
                     print(Colors.RED + 'ERROR: file extension' + Colors.END)
-                    exit()
+                    exit(1)
             elif argv[2] == '-t':
                 output_file_mode = 'txt'
                 output_filename = argv[3]
                 if output_filename[-3:] != output_file_mode:
                     print(Colors.RED + 'ERROR: file extension' + Colors.END)
-                    exit()
+                    exit(1)
             elif argv[2] == '-o':
                 output_file_mode = 'both'
                 output_filename = argv[3]
             else:
                 print(Colors.RED + 'ERROR: wrong arguments' + Colors.END)
                 print_help()
-                exit()
+                exit(1)
     return (interface, output_file_mode, output_filename, max_cycles)
 
 
