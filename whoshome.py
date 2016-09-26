@@ -68,7 +68,7 @@ class Whoshome:
 
     def _get_ip_from_interface(self):
         output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')[1]
-        return output[output.find('inet') + 5 : output.find('brd') - 1]
+        return output[output.find('inet') + 5: output.find('brd') - 1]
 
     def cycle(self):
         #arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
@@ -82,11 +82,14 @@ class Whoshome:
                     file_txt = open(self._output_filename + '.txt', 'w')
                     file_json = open(self._output_filename + '.json', 'w')
             for result in results:
-                # A MAC address is 17 characters long. Only the last 3 bytes of the MAC address are taken into account, to ensure compatibility with some network devices which may change the vendor part of MAC addresses
+                # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
+                # address are taken into account, to ensure compatibility with some
+                # network devices which may change the vendor part of MAC addresses
                 mac = result[1][ARP].hwsrc[9:]
                 for person in self._people:
                     if mac == person['target']:
-                        # The counter is set to -1 because every counter will be incremented in the next 'for' cycle
+                        # The counter is set to -1 because every counter will be incremented in
+                        # the next 'for' cycle
                         person['last_seen'] = -1
             for person in self._people:
                 if person['last_seen'] < self._max_cycles:
