@@ -5,7 +5,7 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
-from scapy.all import *
+import scapy.all
 from getpass import getuser
 import platform
 
@@ -74,7 +74,7 @@ class Whoshome:
     def cycle(self):
         while True:
             try:
-                results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
+                results, unanswered = scapy.all.arping(self._get_ip_from_interface(), verbose=False)
                 if self._output_file_mode != 'no':
                     if self._output_file_mode != 'both':
                         file = open(self._output_filename, 'w')
@@ -85,7 +85,7 @@ class Whoshome:
                     # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
                     # address are taken into account, to ensure compatibility with some
                     # network devices which may change the vendor part of MAC addresses
-                    mac = result[1][ARP].hwsrc[9:]
+                    mac = result[1][scapy.all.ARP].hwsrc[9:]
                     for person in self._people:
                         if mac == person['target']:
                             # The counter is set to -1 because every counter will be incremented in
