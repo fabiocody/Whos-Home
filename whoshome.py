@@ -5,9 +5,10 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
-from scapy.all import * 
+from scapy.all import *
 from getpass import getuser
 import platform
+from pwd import getpwall
 
 
 # Color class used to print colors
@@ -32,14 +33,20 @@ class Whoshome:
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
-        try:
-            people_file = open(home_path + '.people.json', 'r')
-            people_json = json.load(people_file)
-            people_file.close()
-        except:
+        for p in getpwall():
+            home_path = os.path.expanduser('~' + p[0]) + '/'
+            try:
+                people_json = None
+                people_file = open(home_path + '.people.json', 'r')
+                people_json = json.load(people_file)
+                people_file.close()
+            except:
+                pass
+        if people_json == None:
             print(Colors.RED + 'ERROR opening .people.json' + Colors.END)
             exit(1)
-        return people_json
+        else:
+            return people_json
 
     def _make_people_list(self, people_json):
         people = list()
@@ -188,12 +195,9 @@ def parse_argv():
     return (interface, output_file_mode, output_filename, max_cycles)
 
 
-#script_path = os.path.dirname(os.path.abspath(__file__)) + '/'
-home_path = os.path.expanduser('~') + '/'
-
-
 def main():
     check_environment()
+    print('Loading...\n')
     wh = Whoshome(parse_argv())
     wh.cycle()
 
