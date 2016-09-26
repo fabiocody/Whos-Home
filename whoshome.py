@@ -72,53 +72,50 @@ class Whoshome:
         return output[output.find('inet') + 5: output.find('brd') - 1]
 
     def cycle(self):
-        #arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
         while True:
-            #output = getstatusoutput(arp_command)[1]
-            results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
-            if self._output_file_mode != 'no':
-                if self._output_file_mode != 'both':
-                    file = open(self._output_filename, 'w')
-                else:
-                    file_txt = open(self._output_filename + '.txt', 'w')
-                    file_json = open(self._output_filename + '.json', 'w')
-            for result in results:
-                # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
-                # address are taken into account, to ensure compatibility with some
-                # network devices which may change the vendor part of MAC addresses
-                mac = result[1][ARP].hwsrc[9:]
-                for person in self._people:
-                    if mac == person['target']:
-                        # The counter is set to -1 because every counter will be incremented in
-                        # the next 'for' cycle
-                        person['last_seen'] = -1
-            for person in self._people:
-                if person['last_seen'] < self._max_cycles:
-                    person['last_seen'] += 1
-                    print(Colors.GREEN + '🏡 ' + person['name'] + ' is home' + Colors.END)
-                    if self._output_file_mode == 'txt':
-                        file.write('🏡 ' + person['name'] + ' is home\n')
-                    elif self._output_file_mode == 'both':
-                        file_txt.write('🏡 ' + person['name'] + ' is home\n')
-                else:
-                    print(Colors.PURPLE + '🌍 ' + person['name'] + ' is away' + Colors.END)
-                    if self._output_file_mode == 'txt':
-                        file.write('🌍 ' + person['name'] + ' is away\n')
-                    elif self._output_file_mode == 'both':
-                        file_txt.write('🌍 ' + person['name'] + ' is away\n')
-            print()
-            if self._output_file_mode != 'no':
-                if self._output_file_mode == 'json':
-                    self._create_json(file)
-                elif self._output_file_mode == 'both':
-                    self._create_json(file_json)
-                try:
-                    file_txt.close()
-                    file_json.close()
-                except:
-                    file.close()
-
             try:
+                results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
+                if self._output_file_mode != 'no':
+                    if self._output_file_mode != 'both':
+                        file = open(self._output_filename, 'w')
+                    else:
+                        file_txt = open(self._output_filename + '.txt', 'w')
+                        file_json = open(self._output_filename + '.json', 'w')
+                for result in results:
+                    # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
+                    # address are taken into account, to ensure compatibility with some
+                    # network devices which may change the vendor part of MAC addresses
+                    mac = result[1][ARP].hwsrc[9:]
+                    for person in self._people:
+                        if mac == person['target']:
+                            # The counter is set to -1 because every counter will be incremented in
+                            # the next 'for' cycle
+                            person['last_seen'] = -1
+                for person in self._people:
+                    if person['last_seen'] < self._max_cycles:
+                        person['last_seen'] += 1
+                        print(Colors.GREEN + '🏡 ' + person['name'] + ' is home' + Colors.END)
+                        if self._output_file_mode == 'txt':
+                            file.write('🏡 ' + person['name'] + ' is home\n')
+                        elif self._output_file_mode == 'both':
+                            file_txt.write('🏡 ' + person['name'] + ' is home\n')
+                    else:
+                        print(Colors.PURPLE + '🌍 ' + person['name'] + ' is away' + Colors.END)
+                        if self._output_file_mode == 'txt':
+                            file.write('🌍 ' + person['name'] + ' is away\n')
+                        elif self._output_file_mode == 'both':
+                            file_txt.write('🌍 ' + person['name'] + ' is away\n')
+                print()
+                if self._output_file_mode != 'no':
+                    if self._output_file_mode == 'json':
+                        self._create_json(file)
+                    elif self._output_file_mode == 'both':
+                        self._create_json(file_json)
+                    try:
+                        file_txt.close()
+                        file_json.close()
+                    except:
+                        file.close()
                 sleep(30)
             except KeyboardInterrupt:
                 print('\nQuit')
@@ -143,11 +140,11 @@ def check_dependencies():		# Check if arp-scan is installed
 
 
 def check_environment():
-    if getuser() != 'root':
-        print(Colors.RED + 'ERROR: must be run as root' + Colors.END)
-        exit(1)
     if platform.system() != 'Linux':
         print(Colors.RED + 'ERROR: system not supported' + Colors.END)
+        exit(1)
+    if getuser() != 'root':
+        print(Colors.RED + 'ERROR: must be run as root' + Colors.END)
         exit(1)
 
 
