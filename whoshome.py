@@ -66,14 +66,14 @@ class Whoshome:
         json.dump(json_obj, file)
 
     def _get_ip_from_interface(self):
-        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
+        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')[1]
         return output[output.find('inet') + 5 : output.find('brd') - 1]
 
     def cycle(self):
         #arp_command = 'sudo arp-scan --interface ' + self._interface + ' --localnet'
         while True:
             #output = getstatusoutput(arp_command)[1]
-            results, unanswered = arping('192.168.1.0/24', verbose=False)
+            results, unanswered = arping(self._get_ip_from_interface(self._interface), verbose=False)
             if self._output_file_mode != 'no':
                 if self._output_file_mode != 'both':
                     file = open(self._output_filename, 'w')
@@ -112,7 +112,7 @@ class Whoshome:
                     file_json.close()
                 except:
                     file.close()
-            
+
             try:
                 sleep(30)
             except KeyboardInterrupt:
