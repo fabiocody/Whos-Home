@@ -33,6 +33,8 @@ class Whoshome:
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
+        # Try to open .people.json in every user's home directory. This should
+        # work since there should be just one config file system-wide.
         for p in getpwall():
             home_path = os.path.expanduser('~' + p[0]) + '/'
             try:
