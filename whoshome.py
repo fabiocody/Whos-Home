@@ -7,6 +7,7 @@ from time import sleep
 from subprocess import getstatusoutput
 from scapy.all import *
 from getpass import getuser
+import platform
 
 
 # Color class used to print colors
@@ -141,9 +142,12 @@ def check_dependencies():		# Check if arp-scan is installed
 """
 
 
-def check_user():
+def check_environment():
     if getuser() != 'root':
         print(Colors.RED + 'ERROR: must be run as root' + Colors.END)
+        exit(1)
+    if platform.system() != 'Linux':
+        print(Colors.RED + 'ERROR: system not supported' + Colors.END)
         exit(1)
 
 
@@ -192,7 +196,7 @@ home_path = os.path.expanduser('~') + '/'
 
 
 def main():
-    check_user()
+    check_environment()
     wh = Whoshome(parse_argv())
     wh.cycle()
 
