@@ -3,6 +3,7 @@
 
 This tool analyze the arp table (using arp-scan) to determine who is at home (i.e.: connected to the local network).
 
+**IMPORTANT**
 *Who's Home* works only in Python3.
 
 ### How to install
