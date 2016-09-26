@@ -5,7 +5,7 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
-from scapy.all import arping
+from scapy.all import *
 from getpass import getuser
 
 
