@@ -84,6 +84,7 @@ class Whoshome:
             return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
         else:
             print(Colors.RED + 'ERROR: invalid interface' + Colors.END)
+            exit(1)
 
     def cycle(self):
         while True:
@@ -143,14 +144,6 @@ def print_help():
     print('    -j | json file output')
     print('    -o | txt and json file output (don\'t write file extension in filename)')
     print('The developer declines every responsibility in case of malfunction due to non observance of this tiny guide' + Colors.END)
-
-
-"""
-def check_dependencies():		# Check if arp-scan is installed
-    if os.system('type arp-scan 1>/dev/null 2>/dev/null'):
-        print(Colors.RED + 'ERROR: arp-scan not installed' + Colors.END)
-        exit(1)
-"""
 
 
 def check_environment():
