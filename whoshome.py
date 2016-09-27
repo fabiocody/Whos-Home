@@ -79,9 +79,9 @@ class Whoshome:
         json.dump(json_obj, file)
 
     def _get_ip_from_interface(self):
-        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')[1]
+        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
         if output[0] == 0:
-            return output[output.find('inet') + 5: output.find('brd') - 1]
+            return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
         else:
             print(Colors.RED + 'ERROR: invalid interface' + Colors.END)
 
