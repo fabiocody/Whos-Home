@@ -77,7 +77,7 @@ class Whoshome:
             temp_dict['target'] = person['target']
             temp_dict['home'] = bool(person['last_seen'] < self._max_cycles)
             json_obj.append(temp_dict)
-        json.dump(json_obj, file)
+        json.dump(json_obj, file, indent=4)
 
     def _get_ip_from_interface(self):
         output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
