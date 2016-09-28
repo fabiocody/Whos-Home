@@ -112,13 +112,13 @@ class Whoshome:
                 for person in self._people:
                     if person['last_seen'] < self._max_cycles:
                         person['last_seen'] += 1
-                        print(Colors.GREEN + '🏡 ' + person['name'] + ' is home' + Colors.END)
+                        print(Colors.GREEN + '🏡  ' + person['name'] + ' is home' + Colors.END)
                         if self._output_file_mode == 'txt':
                             file.write('🏡 ' + person['name'] + ' is home\n')
                         elif self._output_file_mode == 'both':
                             file_txt.write('🏡 ' + person['name'] + ' is home\n')
                     else:
-                        print(Colors.PURPLE + '🌍 ' + person['name'] + ' is away' + Colors.END)
+                        print(Colors.PURPLE + '🌍  ' + person['name'] + ' is away' + Colors.END)
                         if self._output_file_mode == 'txt':
                             file.write('🌍 ' + person['name'] + ' is away\n')
                         elif self._output_file_mode == 'both':
@@ -158,7 +158,7 @@ def check_environment():
         exit(1)
 
 
-def parse_argv():
+def parse_argv(passed_args=None):
     parser = argparse.ArgumentParser(
         description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
     parser.add_argument('interface', type=str, help='Interface used to send ARP-Requests.')
@@ -166,7 +166,7 @@ def parse_argv():
                         help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file formatting will be inferred from the file extension. If you want to have both file formatting, omit the file extension.')
     parser.add_argument('-c', '--max-cycles', type=int, default=30,
                         help='Alter `max_cycles` variable to modify the period of time in which a person is considered at home.')
-    args = parser.parse_args()
+    args = parser.parse_args(passed_args)
     interface = args.interface
     if args.output == None:
         output_file_mode = 'no'
