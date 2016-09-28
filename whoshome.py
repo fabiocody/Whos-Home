@@ -157,10 +157,13 @@ def check_environment():
 
 
 def parse_argv():
-    parser = argparse.ArgumentParser(description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
+    parser = argparse.ArgumentParser(
+        description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
     parser.add_argument('interface', type=str, help='Interface where scan will be performed.')
-    parser.add_argument('-o', '--output', type=str, help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file formatting will be inferred from the file extension. Omit the file extension of you want to have both file formatting.')
-    parser.add_argument('-c', '--max-cycle', type=int, default=30, help='Alter `max_cycles` variable to lengthen the period of time in which a person is considered at home.')
+    parser.add_argument('-o', '--output', type=str,
+                        help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file formatting will be inferred from the file extension. Omit the file extension of you want to have both file formatting.')
+    parser.add_argument('-c', '--max-cycle', type=int, default=30,
+                        help='Alter `max_cycles` variable to lengthen the period of time in which a person is considered at home.')
     args = parser.parse_args()
     interface = args.interface
     if args.output == None:
