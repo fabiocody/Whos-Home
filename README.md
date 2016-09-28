@@ -3,8 +3,7 @@
 
 This tool uses ARPing to determine who is at home (i.e.: connected to the local network).
 
-**IMPORTANT**
-
+**IMPORTANT**  
 *Who's Home* works only in Python3.
 
 ### How to install
