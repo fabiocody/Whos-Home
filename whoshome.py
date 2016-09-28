@@ -50,7 +50,7 @@ class Whoshome:
             except:
                 pass
         if people_json == None:
-            print(Colors.RED + 'ERROR opening .people.json' + Colors.END)
+            print(Colors.RED + 'error opening .people.json' + Colors.END)
             exit(1)
         else:
             return people_json
@@ -62,7 +62,7 @@ class Whoshome:
             person_dict['target'] = person_dict['target'].lower()
             for c in person_dict['target']:
                 if c not in allowed:
-                    print(Colors.RED + 'ERROR: invalid character found in one or more MAC addresses' + Colors.END)
+                    print(Colors.RED + 'error: invalid character found in one or more MAC addresses' + Colors.END)
                     exit(1)
             if len(person_dict['target']) == 17:
                 person_dict['target'] = person_dict['target'][9:]
@@ -86,7 +86,7 @@ class Whoshome:
         if output[0] == 0:
             return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
         else:
-            print(Colors.RED + 'ERROR: invalid interface' + Colors.END)
+            print(Colors.RED + 'error: invalid interface' + Colors.END)
             exit(1)
 
     def cycle(self):
@@ -151,10 +151,10 @@ def print_help():
 
 def check_environment():
     if platform.system() != 'Linux':
-        print(Colors.RED + 'ERROR: system not supported' + Colors.END)
+        print(Colors.RED + 'error: system not supported' + Colors.END)
         exit(1)
     if getuser() != 'root':
-        print(Colors.RED + 'ERROR: must be run as root' + Colors.END)
+        print(Colors.RED + 'error: must be run as root' + Colors.END)
         parse_argv()
         exit(1)
 
@@ -184,48 +184,6 @@ def parse_argv(passed_args=None):
             output_filename = args.output
     max_cycles = args.max_cycles
     return (interface, output_file_mode, output_filename, max_cycles)
-
-
-"""
-def parse_argv():
-    argc = len(argv)
-    interface = str()
-    output_file_mode = 'no'
-    output_filename = str()
-    max_cycles = 30
-    if argc < 2 or argc > 5:
-        print(Colors.RED + 'ERROR: wrong arguments' + Colors.END)
-        print_help()
-        exit(1)
-    else:
-        if argv[1] == '-h' or argv[1] == '--help':
-            print_help()
-            exit(1)
-        interface = argv[1]
-        if argc % 2:
-            max_cycles = int(argv[argc - 1])
-        if argc >= 4:
-            if argv[2] == '-j':
-                output_file_mode = 'json'
-                output_filename = argv[3]
-                if output_filename[-4:] != output_file_mode:
-                    print(Colors.RED + 'ERROR: file extension' + Colors.END)
-                    exit(1)
-            elif argv[2] == '-t':
-                output_file_mode = 'txt'
-                output_filename = argv[3]
-                if output_filename[-3:] != output_file_mode:
-                    print(Colors.RED + 'ERROR: file extension' + Colors.END)
-                    exit(1)
-            elif argv[2] == '-o':
-                output_file_mode = 'both'
-                output_filename = argv[3]
-            else:
-                print(Colors.RED + 'ERROR: wrong arguments' + Colors.END)
-                print_help()
-                exit(1)
-    return (interface, output_file_mode, output_filename, max_cycles)
-"""
 
 
 def main():
