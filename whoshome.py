@@ -10,6 +10,7 @@ from scapy.layers.l2 import arping
 from getpass import getuser
 import platform
 from pwd import getpwall
+import argparse
 
 
 # Color class used to print colors
@@ -156,6 +157,31 @@ def check_environment():
 
 
 def parse_argv():
+    parser = argparse.ArgumentParser(description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
+    parser.add_argument('interface', type=str, help='Interface where scan will be performed.')
+    parser.add_argument('-o', '--output', type=str, help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file formatting will be inferred from the file extension. Omit the file extension of you want to have both file formatting.')
+    parser.add_argument('-c', '--max-cycle', type=int, default=30, help='Alter `max_cycles` variable to lengthen the period of time in which a person is considered at home.')
+    args = parser.parse_args()
+    interface = args.interface
+    if args.output == None:
+        output_file_mode = 'no'
+        output_filename = str()
+    else:
+        allowed_extensions = ['txt', 'json']
+        file_split = args.output.split('.')
+        file_extension = file_split[-1]
+        if file_extension in allowed_extensions:
+            output_file_mode = file_extension
+            output_filename = args.output
+        else:
+            output_file_mode = 'both'
+            output_filename = args.output
+    max_cycles = args.max_cycles
+    return (interface, output_file_mode, output_filename, max_cycles)
+
+
+"""
+def parse_argv():
     argc = len(argv)
     interface = str()
     output_file_mode = 'no'
@@ -193,6 +219,7 @@ def parse_argv():
                 print_help()
                 exit(1)
     return (interface, output_file_mode, output_filename, max_cycles)
+"""
 
 
 def main():
