@@ -31,8 +31,8 @@ Make sure you use colons as separators.
 ## Change threshold
 The time threshold is implemented with the integer variable `max_cycles`, whose value is double the value of the threshold in minutes.
 The default value is 30 (15 minutes), but you can pass your desired value along with the other arguments.
-Please type `whoshome -h` for more information.
+Please type `whoshome -h` in your terminal for more information.
 
 
 ## Invocation
-Please type `whoshome -h | --help` for more information.
+Please type `whoshome -h` in your terminal for more information.
