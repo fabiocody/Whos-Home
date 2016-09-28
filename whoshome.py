@@ -164,7 +164,7 @@ def parse_argv(passed_args=None):
         description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
     parser.add_argument('interface', type=str, help='Interface used to send ARP-Requests.')
     parser.add_argument('-o', '--output', type=str,
-                        help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file formatting will be inferred from the file extension. If you want to have both file formatting, omit the file extension.')
+                        help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file format will be inferred from the file extension. If you want to have both file formats, omit the file extension.')
     parser.add_argument('-c', '--max-cycles', type=int, default=30,
                         help='Alter `max_cycles` variable to modify the period of time in which a person is considered at home.')
     args = parser.parse_args(passed_args)
