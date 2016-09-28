@@ -155,6 +155,7 @@ def check_environment():
         exit(1)
     if getuser() != 'root':
         print(Colors.RED + 'ERROR: must be run as root' + Colors.END)
+        parse_argv()
         exit(1)
 
 
