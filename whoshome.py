@@ -227,7 +227,6 @@ def parse_argv():
 
 def main():
     check_environment()
-    print('Loading...\n')
     wh = Whoshome(parse_argv())
     wh.cycle()
 
