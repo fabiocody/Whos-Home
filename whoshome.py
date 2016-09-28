@@ -5,6 +5,8 @@ import json
 from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import ARP
 from scapy.layers.l2 import arping
 from getpass import getuser
