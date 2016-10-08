@@ -35,25 +35,26 @@ class Whoshome:
         self._output_filename = args[2]
         self._max_cycles = args[3]
         self._logging_level = args[4]
-        for handler in logging.root.handlers[:]:
+        for handler in logging.root.handlers[:]:    # Remove logging handlers to reset logging facilities
             logging.root.removeHandler(handler)
         logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s',
                             level=self._logging_level)
-        print(self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
         # Try to open .people.json in every user's home directory. This should
         # work since there should be just one config file system-wide.
-        logging.info('opening people.json')
+        logging.info('opening .people.json')
         for p in getpwall():
             home_path = os.path.expanduser('~' + p[0]) + '/'
             try:
-                logging.debug('creating people JSON')
                 people_json = None
                 people_file = open(home_path + '.people.json', 'r')
+                logging.debug('.people. opened')
+
                 people_json = json.load(people_file)
                 people_file.close()
+                logging.debug('.people.json closed')
                 break
             except:
                 pass
