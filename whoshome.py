@@ -38,7 +38,7 @@ class Whoshome:
         # Remove logging handlers to reset logging facilities
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)
-        logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s',
+        logging.basicConfig(format='[*] %(asctime)s - %(levelname)-8s: %(message)s',
                             level=self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
@@ -218,7 +218,7 @@ def parse_argv(passed_args=None):
 
 
 def main():
-    logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s')
+    logging.basicConfig(format='[*] %(asctime)s - %(levelname)-8s: %(message)s')
     check_environment()
     wh = Whoshome(parse_argv())
     wh.cycle()
