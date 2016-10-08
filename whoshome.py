@@ -35,7 +35,8 @@ class Whoshome:
         self._output_filename = args[2]
         self._max_cycles = args[3]
         self._logging_level = args[4]
-        for handler in logging.root.handlers[:]:    # Remove logging handlers to reset logging facilities
+        # Remove logging handlers to reset logging facilities
+        for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)
         logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s',
                             level=self._logging_level)
@@ -145,8 +146,8 @@ class Whoshome:
                             file.write('🌍 ' + person['name'] + ' is away\n')
                         elif self._output_file_mode == 'both':
                             file_txt.write('🌍 ' + person['name'] + ' is away\n')
+                logging.debug('handling file output')
                 print()
-                logging.debug('output file')
                 if self._output_file_mode != 'no':
                     if self._output_file_mode == 'json':
                         self._create_json(file)
