@@ -84,6 +84,7 @@ class Whoshome:
                 person_dict['target'] = person_dict['target'][9:]
             elif len(person_dict['target']) != 8:
                 logging.error('invalid MAC address length ' + person_dict['target'])
+                exit(1)
             people.append(person_dict)
         for person in people:
             logging.debug('initializing counter')
