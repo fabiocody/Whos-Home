@@ -77,7 +77,7 @@ class Whoshome:
             # network devices which may change the vendor part of MAC addresses
             if len(person_dict['target']) == 17:
                 person_dict['target'] = person_dict['target'][9:]
-            elif len(person_dict['target'] != 8):
+            elif len(person_dict['target']) != 8:
                 logging.error('invalid MAC address length ' + person_dict['target'])
             people.append(person_dict)
         for person in people:
