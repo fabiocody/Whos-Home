@@ -115,6 +115,7 @@ class Whoshome:
         while True:
             logging.debug('cycling')
             try:
+                logging.debug('ARPINGing')
                 results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
                 if self._output_file_mode != 'no':
                     if self._output_file_mode != 'both':
@@ -122,6 +123,7 @@ class Whoshome:
                     else:
                         file_txt = open(self._output_filename + '.txt', 'w')
                         file_json = open(self._output_filename + '.json', 'w')
+                logging.debug('parsing results')
                 for result in results:
                     # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
                     # address are taken into account, to ensure compatibility with some
