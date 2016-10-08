@@ -35,8 +35,10 @@ class Whoshome:
         self._output_filename = args[2]
         self._max_cycles = args[3]
         self._logging_level = args[4]
-        logging.basicConfig(
-            format='[*] %(asctime)s - %(levelname)s: %(message)s', level=self._logging_level)
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+        logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s',
+                            level=self._logging_level)
         print(self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
