@@ -37,6 +37,7 @@ class Whoshome:
         self._logging_level = args[4]
         logging.basicConfig(
             format='[*] %(asctime)s - %(levelname)s: %(message)s', level=self._logging_level)
+        print(self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
