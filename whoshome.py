@@ -181,9 +181,9 @@ def check_environment():
         logging.error('system not supported')
         exit(1)
     if getuser() != 'root':
-        logging.error('please run as root')
+        logging.critical('please run as root')
         parse_argv()
-        exit(1)
+        #exit(1)
 
 
 def parse_argv(passed_args=None):
