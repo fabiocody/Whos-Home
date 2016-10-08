@@ -34,6 +34,8 @@ class Whoshome:
         self._output_file_mode = args[1]
         self._output_filename = args[2]
         self._max_cycles = args[3]
+        self._logging_level = args[4]
+        logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s', level = self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
@@ -50,7 +52,7 @@ class Whoshome:
             except:
                 pass
         if people_json == None:
-            print(Colors.RED + 'error opening .people.json' + Colors.END)
+            logging.error('cannot open .people.json')
             exit(1)
         else:
             return people_json
@@ -62,7 +64,7 @@ class Whoshome:
             person_dict['target'] = person_dict['target'].lower()
             for c in person_dict['target']:
                 if c not in allowed:
-                    print(Colors.RED + 'error: invalid character found in one or more MAC addresses' + Colors.END)
+                    logging.error('invalid character found in one or more MAC addresses')
                     exit(1)
             if len(person_dict['target']) == 17:
                 person_dict['target'] = person_dict['target'][9:]
@@ -86,7 +88,7 @@ class Whoshome:
         if output[0] == 0:
             return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
         else:
-            print(Colors.RED + 'error: invalid interface' + Colors.END)
+            logging.error('invalid interface')
             exit(1)
 
     def cycle(self):
@@ -151,10 +153,10 @@ def print_help():
 
 def check_environment():
     if platform.system() != 'Linux':
-        print(Colors.RED + 'error: system not supported' + Colors.END)
+        logging.error('system not supported')
         exit(1)
     if getuser() != 'root':
-        print(Colors.RED + 'error: must be run as root' + Colors.END)
+        logging.error('please run as root')
         parse_argv()
         exit(1)
 
@@ -167,6 +169,8 @@ def parse_argv(passed_args=None):
                         help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file format will be inferred from the file extension. If you want to have both file formats, omit the file extension.')
     parser.add_argument('-c', '--max-cycles', type=int, default=30,
                         help='Alter `max_cycles` variable to modify the period of time in which a person is considered at home.')
+    parser.add_argument('-l', '--log', type=str, help='Set logging level',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], default='WARNING')
     args = parser.parse_args(passed_args)
     interface = args.interface
     if args.output == None:
@@ -183,10 +187,12 @@ def parse_argv(passed_args=None):
             output_file_mode = 'both'
             output_filename = args.output
     max_cycles = args.max_cycles
-    return (interface, output_file_mode, output_filename, max_cycles)
+    logging_level = getattr(logging, args.log)
+    return (interface, output_file_mode, output_filename, max_cycles, logging_level)
 
 
 def main():
+    logging.basicConfig(format='[*] %(asctime)s - %(levelname)s: %(message)s')
     check_environment()
     wh = Whoshome(parse_argv())
     wh.cycle()
