@@ -143,7 +143,7 @@ class Whoshome:
                         elif self._output_file_mode == 'both':
                             file_txt.write('🏡 ' + person['name'] + ' is home\n')
                     else:
-                        print(Colors.PURPLE + '🌍  ' + person['name'] + ' is away' + Colors.END)
+                        print(Colors.YELLOW + '🌍  ' + person['name'] + ' is away' + Colors.END)
                         if self._output_file_mode == 'txt':
                             file.write('🌍 ' + person['name'] + ' is away\n')
                         elif self._output_file_mode == 'both':
