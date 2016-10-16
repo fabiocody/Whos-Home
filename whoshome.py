@@ -88,7 +88,7 @@ class Whoshome:
                 exit(1)
             people.append(person_dict)
         for person in people:
-            logger.debug('initializing counter')
+            logger.debug('initializing counter for {mac}'.format(mac=person['target']))
             person['last_seen'] = self._max_cycles
         return people
 
