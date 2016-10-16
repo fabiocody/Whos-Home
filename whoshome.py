@@ -7,6 +7,7 @@ from time import sleep
 from subprocess import getstatusoutput
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+logger = logging.getLogger('whoshome')
 from scapy.all import ARP
 from scapy.layers.l2 import arping
 from getpass import getuser
@@ -38,43 +39,43 @@ class Whoshome:
         # Remove logging handlers to reset logging facilities
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)
-        logging.basicConfig(format='[*] %(asctime)s - %(levelname)-8s: %(message)s',
+        logging.basicConfig(format='[*] %(levelname)s : %(module)s : %(message)s',
                             level=self._logging_level)
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
         # Try to open .people.json in every user's home directory. This should
         # work since there should be just one config file system-wide.
-        logging.info('opening .people.json')
+        logger.info('opening .people.json')
         for p in getpwall():
             home_path = os.path.expanduser('~' + p[0]) + '/'
             try:
                 people_json = None
                 people_file = open(home_path + '.people.json', 'r')
-                logging.debug('.people. opened')
+                logger.debug('.people. opened')
 
                 people_json = json.load(people_file)
                 people_file.close()
-                logging.debug('.people.json closed')
+                logger.debug('.people.json closed')
                 break
             except:
                 pass
         if people_json == None:
-            logging.error('cannot open .people.json')
+            logger.error('cannot open .people.json')
             exit(1)
         else:
             return people_json
 
     def _make_people_list(self, people_json):
-        logging.info('making people list')
+        logger.info('making people list')
         people = list()
         allowed = '1234567890abcdef:'
         for person_dict in people_json:
             person_dict['target'] = person_dict['target'].lower()
-            logging.debug('checking MAC address ' + person_dict['target'])
+            logger.debug('checking MAC address ' + person_dict['target'])
             for c in person_dict['target']:
                 if c not in allowed:
-                    logging.error('invalid character found in ' +
+                    logger.error('invalid character found in ' +
                                   person_dict['name'] + '\'s MAC address ' + person_dict['target'])
                     exit(1)
             # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
@@ -83,16 +84,16 @@ class Whoshome:
             if len(person_dict['target']) == 17:
                 person_dict['target'] = person_dict['target'][9:]
             elif len(person_dict['target']) != 8:
-                logging.error('invalid MAC address length ' + person_dict['target'])
+                logger.error('invalid MAC address length ' + person_dict['target'])
                 exit(1)
             people.append(person_dict)
         for person in people:
-            logging.debug('initializing counter')
+            logger.debug('initializing counter')
             person['last_seen'] = self._max_cycles
         return people
 
     def _create_json(self, file):
-        logging.info('creating output JSON')
+        logger.info('creating output JSON')
         json_obj = list()
         for person in self._people:
             temp_dict = dict()
@@ -103,20 +104,20 @@ class Whoshome:
         json.dump(json_obj, file, indent=4)
 
     def _get_ip_from_interface(self):
-        logging.info('getting IP address from interface name')
+        logger.info('getting IP address from interface name')
         output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
         if output[0] == 0:
             return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
         else:
-            logging.error('invalid interface')
+            logger.error('invalid interface')
             exit(1)
 
     def cycle(self):
-        logging.info('starting cycle')
+        logger.info('starting cycle')
         while True:
-            logging.debug('cycling')
+            logger.debug('cycling')
             try:
-                logging.debug('ARPINGing')
+                logger.debug('ARPINGing')
                 results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
                 if self._output_file_mode != 'no':
                     if self._output_file_mode != 'both':
@@ -124,7 +125,7 @@ class Whoshome:
                     else:
                         file_txt = open(self._output_filename + '.txt', 'w')
                         file_json = open(self._output_filename + '.json', 'w')
-                logging.debug('parsing results')
+                logger.debug('parsing results')
                 for result in results:
                     # A MAC address is 17 characters long. Only the last 3 bytes of the MAC
                     # address are taken into account, to ensure compatibility with some
@@ -149,7 +150,7 @@ class Whoshome:
                             file.write('🌍 ' + person['name'] + ' is away\n')
                         elif self._output_file_mode == 'both':
                             file_txt.write('🌍 ' + person['name'] + ' is away\n')
-                logging.debug('handling file output')
+                logger.debug('handling file output')
                 print()
                 if self._output_file_mode != 'no':
                     if self._output_file_mode == 'json':
@@ -177,18 +178,18 @@ def print_help():
 
 
 def check_environment():
-    logging.info('checking environment')
+    logger.info('checking environment')
     if platform.system() != 'Linux':
-        logging.error('system not supported')
+        logger.error('system not supported')
         exit(1)
     if getuser() != 'root':
-        logging.error('please run as root')
+        logger.error('please run as root')
         parse_argv()
         exit(1)
 
 
 def parse_argv(passed_args=None):
-    logging.info('parsing arguments')
+    logger.info('parsing arguments')
     parser = argparse.ArgumentParser(
         description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
     parser.add_argument('interface', type=str, help='Interface used to send ARP-Requests.')
@@ -219,7 +220,7 @@ def parse_argv(passed_args=None):
 
 
 def main():
-    logging.basicConfig(format='[*] %(asctime)s - %(levelname)-8s: %(message)s')
+    logging.basicConfig(format='[*] %(levelname)s : %(module)s : %(message)s')
     check_environment()
     wh = Whoshome(parse_argv())
     wh.cycle()
