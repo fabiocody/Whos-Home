@@ -48,7 +48,7 @@ class Whoshome:
         # work since there should be just one config file system-wide.
         logger.info('opening .people.json')
         for p in getpwall():
-            home_path = os.path.expanduser('~' + p[0]) + '/'
+            home_path = p.pw_dir + '/'
             try:
                 people_json = None
                 people_file = open(home_path + '.people.json', 'r')
