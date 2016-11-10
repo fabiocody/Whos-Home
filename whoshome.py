@@ -49,11 +49,9 @@ class Whoshome:
             home_path = p.pw_dir + '/'
             try:
                 people_json = None
-                people_file = open(home_path + '.people.json', 'r')
-                logger.debug('.people. opened')
-
-                people_json = json.load(people_file)
-                people_file.close()
+                with open(home_path + '.people.json', 'r') as f:
+                    logger.debug('.people. opened')
+                    people_json = json.load(f)
                 logger.debug('.people.json closed')
                 break
             except:
