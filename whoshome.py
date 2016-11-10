@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import os
 import json
-from sys import argv
 from time import sleep
 from subprocess import getstatusoutput
 import logging
@@ -166,15 +164,6 @@ class Whoshome:
             except KeyboardInterrupt:
                 print('\nQuit')
                 exit(0)
-
-
-def print_help():
-    print(Colors.YELLOW + 'Usage:    ' + argv[0] + ' interface [option | filename] [max_cycles]')
-    print('Options:')
-    print('    -t | txt file output')
-    print('    -j | json file output')
-    print('    -o | txt and json file output (don\'t write file extension in filename)')
-    print('The developer declines every responsibility in case of malfunction due to non observance of this tiny guide' + Colors.END)
 
 
 def check_environment():
