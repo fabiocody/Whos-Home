@@ -1,3 +1,5 @@
+The MIT License (MIT)
+
 Copyright (c) 2016 Fabio Codiglioni
 
 Permission is hereby granted, free of charge, to any person
