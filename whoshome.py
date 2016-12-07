@@ -9,9 +9,9 @@ from time import sleep
 from subprocess import getstatusoutput
 from getpass import getuser
 from pwd import getpwall
+import netifaces
 from scapy.all import ARP
 from scapy.layers.l2 import arping
-from netifaces import ifaddresses, AF_INET
 
 
 __version__ = '1.6.0'
