@@ -5,7 +5,7 @@ python:
 - nightly
 sudo: required
 install:
-- pip3 install pylint scapy-python3
+- pip3 install pylint scapy-python3 netifaces
 script: pylint *.py -E
 deploy:
   provider: pypi

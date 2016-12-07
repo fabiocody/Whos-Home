@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 
+import argparse
 import json
-from time import sleep
-from subprocess import getstatusoutput
+import platform
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-logger = logging.getLogger('whoshome')
+from time import sleep
+from subprocess import getstatusoutput
+from getpass import getuser
+from pwd import getpwall
 from scapy.all import ARP
 from scapy.layers.l2 import arping
-from getpass import getuser
-import platform
-from pwd import getpwall
-import argparse
+from netifaces import ifaddresses, AF_INET
+
+
+__version__ = '1.6.0'
+logger = logging.getLogger('whoshome')
 
 
 # Color class used to print colors
@@ -101,10 +105,9 @@ class Whoshome:
 
     def _get_ip_from_interface(self):
         logger.info('getting IP address from interface name')
-        output = getstatusoutput('ip a | grep ' + self._interface + ' | grep inet')
-        if output[0] == 0:
-            return output[1][output[1].find('inet') + 5: output[1].find('brd') - 1]
-        else:
+        try:
+            addr = ifaddresses(self._interface)[AF_INET][0]['addr']
+        except:
             logger.error('invalid interface')
             exit(1)
 
