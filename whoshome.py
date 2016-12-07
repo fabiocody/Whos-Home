@@ -106,7 +106,7 @@ class Whoshome:
     def _get_ip_from_interface(self):
         logger.info('getting IP address from interface name')
         try:
-            addr = ifaddresses(self._interface)[AF_INET][0]['addr']
+            addr = netifaces.ifaddresses(self._interface)[netifaces.AF_INET][0]['addr']
         except:
             logger.error('invalid interface')
             exit(1)
