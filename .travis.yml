@@ -8,7 +8,7 @@ install:
 - pip3 install pylint scapy-python3
 script:
 script:
-- PYTHONPATH=$PYTHONPATH:$PWD/fake-packages ./build
+- PYTHONPATH=$PYTHONPATH:$PWD/fake-packages
 - pylint *.py -E
 deploy:
   provider: pypi
