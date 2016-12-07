@@ -10,6 +10,7 @@ from subprocess import getstatusoutput
 from getpass import getuser
 from pwd import getpwall
 import netifaces
+import ipaddress
 from scapy.all import ARP
 from scapy.layers.l2 import arping
 
@@ -106,7 +107,10 @@ class Whoshome:
     def _get_ip_from_interface(self):
         logger.info('getting IP address from interface name')
         try:
-            addr = netifaces.ifaddresses(self._interface)[netifaces.AF_INET][0]['addr']
+            iface = netifaces.ifaddresses(self._interface)[netifaces.AF_INET][0]
+            addr = iface['addr']
+            netmask = iface['netmask']
+            return str(ipaddress.ip_interface(addr + '/' + netmask))
         except:
             logger.error('invalid interface')
             exit(1)
