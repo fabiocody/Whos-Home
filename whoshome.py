@@ -110,7 +110,7 @@ class Whoshome:
             iface = netifaces.ifaddresses(self._interface)[netifaces.AF_INET][0]
             addr = iface['addr']
             netmask = iface['netmask']
-            return str(ipaddress.ip_interface(addr + '/' + netmask))
+            return ipaddress.ip_interface(addr + '/' + netmask).with_prefixlen
         except:
             logger.error('invalid interface')
             exit(1)
