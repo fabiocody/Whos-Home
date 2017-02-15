@@ -15,7 +15,7 @@ from scapy.all import ARP
 from scapy.layers.l2 import arping
 
 
-__version__ = '1.6.0'
+__version__ = '1.7.0'
 logger = logging.getLogger('whoshome')
 
 
@@ -47,22 +47,22 @@ class Whoshome:
         self._people = self._make_people_list(self._open_people_file())
 
     def _open_people_file(self):
-        # Try to open .people.json in every user's home directory. This should
+        # Try to open .whoshome_people.json in every user's home directory. This should
         # work since there should be just one config file system-wide.
-        logger.info('opening .people.json')
+        logger.info('opening .whoshome_people.json')
         for p in getpwall():
             home_path = p.pw_dir + '/'
             try:
                 people_json = None
-                with open(home_path + '.people.json', 'r') as f:
+                with open(home_path + '.whoshome_people.json', 'r') as f:
                     logger.debug('.people. opened')
                     people_json = json.load(f)
-                logger.debug('.people.json closed')
+                logger.debug('.whoshome_people.json closed')
                 break
             except:
                 pass
         if people_json == None:
-            logger.error('cannot open .people.json')
+            logger.error('cannot open .whoshome_people.json')
             exit(1)
         else:
             return people_json

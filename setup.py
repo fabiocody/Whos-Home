@@ -13,7 +13,7 @@ except:
 
 setup(
     name='whoshome',
-    version='1.6.0',
+    version='1.7.0',
     description='Find out who\'s home based on Wi-Fi connection',
     long_description=long_description,
     url='https://github.com/fabiocody/Whos-Home',
