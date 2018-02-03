@@ -4,11 +4,9 @@ python:
 - '3.6'
 sudo: required
 install:
-- pip3 install pylint scapy-python3
-script:
-script:
-- export PYTHONPATH=$PYTHONPATH:$PWD/fake-packages
-- pylint *.py -E
+- pip3 install pylint scapy-python3v
+env: PYTHONPATH=$PYTHONPATH:$PWD/fake-packages
+script: pylint *.py -E
 deploy:
   provider: pypi
   user: fabiocody
