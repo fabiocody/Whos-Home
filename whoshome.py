@@ -107,7 +107,8 @@ class Whoshome:
 				exit(1)
 			people.append(person_dict)
 		for person in people:
-			logger.debug('initializing counter for {mac}'.format(mac=person['target']))
+			#logger.debug('initializing counter for {mac}'.format(mac=person['target']))
+			logger.debug('initializing counter for %s', person['target'])
 			person['last_seen'] = self._max_cycles
 		return people
 
@@ -139,7 +140,7 @@ class Whoshome:
 			logger.debug('cycling')
 			try:
 				logger.debug('ARPINGing')
-				results, unanswered = arping(self._get_ip_from_interface(), verbose=False)
+				results = arping(self._get_ip_from_interface(), verbose=False)[0]
 				if self._output_file_mode != 'no':
 					if self._output_file_mode != 'both':
 						file = open(self._output_filename, 'w')
