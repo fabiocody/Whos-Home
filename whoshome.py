@@ -9,9 +9,9 @@ from getpass import getuser
 from pwd import getpwall
 import ipaddress
 import netifaces
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import ARP
 from scapy.layers.l2 import arping
+#logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
 
 __version__ = '1.7.1'
@@ -187,6 +187,9 @@ def parse_argv(passed_args=None):
 	parser = argparse.ArgumentParser(
 		description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
 	parser.add_argument('interface', type=str, help='Interface used to send ARP-Requests.')
+	group = parser.add_mutually_exclusive_group(required=True)
+	group.add_argument('--mac', type=str, action='store_const', const='mac', dest='mode', help='Use MAC address in discovery')
+	group.add_argument('--mdns', type=str, action='store_const', const='mdns', dest='mode', help='Use MDNS names in discovery')
 	parser.add_argument('-o', '--output', type=str,
 						help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file format will be inferred from the file extension. If you want to have both file formats, omit the file extension.')
 	parser.add_argument('-c', '--max-cycles', type=int, default=30,
