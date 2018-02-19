@@ -3,6 +3,7 @@
 
 import argparse
 import json
+from time import sleep
 from collections import namedtuple
 import socket
 import ipaddress
@@ -51,13 +52,18 @@ class Whoshome:
 
 	def main(self):
 		while True:
-			self.mac_discovery()
-			self.mdns_discovery()
-			for p in self.__people:
-				if p.counter < self.__max_cycles:
-					p.counter += 1
-			if self.__output_file:
-				json.dump(self.__people, self.__output_file)
+			try:
+				self.mac_discovery()
+				self.mdns_discovery()
+				for p in self.__people:
+					if p.counter < self.__max_cycles:
+						p.counter += 1
+				if self.__output_file:
+					json.dump(self.__people, self.__output_file)
+				sleep(30)
+			except KeyboardInterrupt:
+				print('\nQuit')
+				exit()
 
 
 
