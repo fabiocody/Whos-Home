@@ -26,7 +26,7 @@ class Whoshome:
 		self.__iface = netifaces.ifaddresses(conf['interface'])[netifaces.AF_INET][0]
 		self.__iface_addr = ipaddress.ip_interface(self.__iface['addr'] + '/' + self.__iface['netmask'])
 		self.__net = ipaddress.ip_network(self.__iface['addr'] + '/' + self.__iface['netmask'], False)
-		self.__max_cycles = conf['interface'] if 'interface' in conf.keys() else 30
+		self.__max_cycles = conf['max_cycles'] if 'max_cycles' in conf.keys() else 30
 		self.__output_filename = output_filename
 		self.__verbose = verbose
 		self.__people = [
