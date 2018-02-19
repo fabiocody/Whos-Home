@@ -61,7 +61,7 @@ class Whoshome:
 						p.counter += 1
 				if self.__output_filename:
 					with open(self.__output_filename, 'w') as f:
-						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname} for p in self.__people], f, indent=4)
+						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname, 'counter': p.counter} for p in self.__people], f, indent=4)
 				sleep(30)
 		except KeyboardInterrupt:
 			print('\nQuit')
