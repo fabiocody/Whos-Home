@@ -1,227 +1,70 @@
 #!/usr/bin/env python3
+# whoshome.py
 
 import argparse
 import json
-import platform
-import logging
-from time import sleep
-from getpass import getuser
-from pwd import getpwall
+from collections import namedtuple
+import socket
 import ipaddress
 import netifaces
 from scapy.all import ARP
 from scapy.layers.l2 import arping
-#logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
 
-__version__ = '1.7.1'
-logger = logging.getLogger('whoshome')
+__version__ = '2.0.0a'
 
 
-# Color class used to print colors
-class Colors:
-	PURPLE = '\033[95m'
-	BLUE = '\033[94m'
-	GREEN = '\033[92m'
-	YELLOW = '\033[93m'
-	RED = '\033[91m'
-	BOLD = '\033[1m'
-	UNDERLINE = '\033[4m'
-	END = '\033[0m'
+Person = namedtuple('Person', ['name', 'mac', 'hostname', 'counter'])
 
 
 class Whoshome:
 
-	def __init__(self, args):
-		self._interface = args[0]
-		self._output_file_mode = args[1]
-		self._output_filename = args[2]
-		self._max_cycles = args[3]
-		self._logging_level = args[4]
-		# Remove logging handlers to reset logging facilities
-		for handler in logging.root.handlers[:]:
-			logging.root.removeHandler(handler)
-		logging.basicConfig(format='[*] %(levelname)s : %(module)s : %(message)s',
-							level=self._logging_level)
-		self._people = self._make_people_list(self._open_people_file())
+	def __init__(self, conf_file, output_file=None):
+		conf = json.load(conf_file)
+		self.__iface = netifaces.ifaddresses(conf['interface'])[netifaces.AF_INET][0]
+		self.__iface_addr = ipaddress.ip_interface(self.__iface['addr'] + '/' + self.__iface['netmask'])
+		self.__net = ipaddress.ip_network(self.__iface['addr'] + '/' + self.__iface['netmask'], False)
+		self.__max_cycles = conf['interface'] if 'interface' in conf.keys() else 30
+		self.__output_file = output_file
+		self.__people = [
+			Person(name=p['name'], mac=p['mac'] if 'mac' in p.keys() else None, hostname=p['hostname'] if 'hostname' in p.keys() else None, counter=self.__max_cycles)
+			for p in conf['people']
+		]
 
-	def _open_people_file(self):
-		# Try to open .whoshome_people.json in every user's home directory. This should
-		# work since there should be just one config file system-wide.
-		logger.info('opening .whoshome_people.json')
-		for p in getpwall():
-			home_path = p.pw_dir + '/'
+
+	def mac_discovery(self):
+		for r in arping(self.__iface_addr.compressed, verbose=False)[0]:
+			mac = r[1][ARP].hwsrc[9:]
+			for p in self.__people:
+				if mac == p.mac:
+					p.counter = -1
+
+	def mdns_discovery(self):
+		for h in self.__net.hosts():
 			try:
-				people_json = None
-				with open(home_path + '.whoshome_people.json', 'r') as f:
-					logger.debug('.people. opened')
-					people_json = json.load(f)
-				logger.debug('.whoshome_people.json closed')
-				break
+				hostname = socket.gethostbyaddr(h.exploded)[0]
 			except:
 				pass
-		if people_json is None:
-			logger.error('cannot open .whoshome_people.json')
-			exit(1)
-		else:
-			return people_json
+			for p in self.__people:
+				if hostname == p.hostname:
+					p.counter = -1
 
-	def _make_people_list(self, people_json):
-		logger.info('making people list')
-		people = list()
-		allowed = '1234567890abcdef:'
-		for person_dict in people_json:
-			person_dict['target'] = person_dict['target'].lower()
-			logger.debug('checking MAC address ' + person_dict['target'])
-			for c in person_dict['target']:
-				if c not in allowed:
-					logger.error('invalid character found in ' +
-								  person_dict['name'] + '\'s MAC address ' + person_dict['target'])
-					exit(1)
-			# A MAC address is 17 characters long. Only the last 3 bytes of the MAC
-			# address are taken into account, to ensure compatibility with some
-			# network devices which may change the vendor part of MAC addresses
-			if len(person_dict['target']) == 17:
-				person_dict['target'] = person_dict['target'][9:]
-			elif len(person_dict['target']) != 8:
-				logger.error('invalid MAC address length ' + person_dict['target'])
-				exit(1)
-			people.append(person_dict)
-		for person in people:
-			#logger.debug('initializing counter for {mac}'.format(mac=person['target']))
-			logger.debug('initializing counter for %s', person['target'])
-			person['last_seen'] = self._max_cycles
-		return people
-
-	def _create_json(self, file):
-		logger.info('creating output JSON')
-		json_obj = list()
-		for person in self._people:
-			temp_dict = dict()
-			temp_dict['name'] = person['name']
-			temp_dict['target'] = person['target']
-			temp_dict['home'] = bool(person['last_seen'] < self._max_cycles)
-			json_obj.append(temp_dict)
-		json.dump(json_obj, file, indent=4)
-
-	def _get_ip_from_interface(self):
-		logger.info('getting IP address from interface name')
-		try:
-			iface = netifaces.ifaddresses(self._interface)[netifaces.AF_INET][0]
-			addr = iface['addr']
-			netmask = iface['netmask']
-			return ipaddress.ip_interface(addr + '/' + netmask).with_prefixlen
-		except:
-			logger.error('invalid interface')
-			exit(1)
-
-	def cycle(self):
-		logger.info('starting cycle')
+	def main(self):
 		while True:
-			logger.debug('cycling')
-			try:
-				logger.debug('ARPINGing')
-				results = arping(self._get_ip_from_interface(), verbose=False)[0]
-				if self._output_file_mode != 'no':
-					if self._output_file_mode != 'both':
-						file = open(self._output_filename, 'w')
-					else:
-						file_txt = open(self._output_filename + '.txt', 'w')
-						file_json = open(self._output_filename + '.json', 'w')
-				logger.debug('parsing results')
-				for result in results:
-					# A MAC address is 17 characters long. Only the last 3 bytes of the MAC
-					# address are taken into account, to ensure compatibility with some
-					# network devices which may change the vendor part of MAC addresses
-					mac = result[1][ARP].hwsrc[9:]
-					for person in self._people:
-						if mac == person['target']:
-							# The counter is set to -1 because every counter will be incremented in
-							# the next 'for' cycle
-							person['last_seen'] = -1
-				for person in self._people:
-					if person['last_seen'] < self._max_cycles:
-						person['last_seen'] += 1
-						print(Colors.GREEN + '🏡  ' + person['name'] + ' is home' + Colors.END)
-						if self._output_file_mode == 'txt':
-							file.write('🏡 ' + person['name'] + ' is home\n')
-						elif self._output_file_mode == 'both':
-							file_txt.write('🏡 ' + person['name'] + ' is home\n')
-					else:
-						print(Colors.YELLOW + '🌍  ' + person['name'] + ' is away' + Colors.END)
-						if self._output_file_mode == 'txt':
-							file.write('🌍 ' + person['name'] + ' is away\n')
-						elif self._output_file_mode == 'both':
-							file_txt.write('🌍 ' + person['name'] + ' is away\n')
-				logger.debug('handling file output')
-				print()
-				if self._output_file_mode != 'no':
-					if self._output_file_mode == 'json':
-						self._create_json(file)
-					elif self._output_file_mode == 'both':
-						self._create_json(file_json)
-					try:
-						file_txt.close()
-						file_json.close()
-					except:
-						file.close()
-				sleep(30)
-			except KeyboardInterrupt:
-				print('\nQuit')
-				exit(0)
+			self.mac_discovery()
+			self.mdns_discovery()
+			for p in self.__people:
+				if p.counter < self.__max_cycles:
+					p.counter += 1
+			if self.__output_file:
+				json.dump(self.__people, self.__output_file)
 
 
-def check_environment():
-	logger.info('checking environment')
-	if platform.system() != 'Linux':
-		logger.error('system not supported')
-		exit(1)
-	if getuser() != 'root':
-		logger.error('please run as root')
-		parse_argv()
-		exit(1)
-
-
-def parse_argv(passed_args=None):
-	logger.info('parsing arguments')
-	parser = argparse.ArgumentParser(
-		description='Who\'s Home  -  Find out who\'s home based on Wi-Fi connection')
-	parser.add_argument('interface', type=str, help='Interface used to send ARP-Requests.')
-	group = parser.add_mutually_exclusive_group(required=True)
-	group.add_argument('--mac', type=str, action='store_const', const='mac', dest='mode', help='Use MAC address in discovery')
-	group.add_argument('--mdns', type=str, action='store_const', const='mdns', dest='mode', help='Use MDNS names in discovery')
-	parser.add_argument('-o', '--output', type=str,
-						help='Send results to a file. Available file extensions are \'.txt\' and \'.json\'. The file format will be inferred from the file extension. If you want to have both file formats, omit the file extension.')
-	parser.add_argument('-c', '--max-cycles', type=int, default=30,
-						help='Alter `max_cycles` variable to modify the period of time in which a person is considered at home.')
-	parser.add_argument('-l', '--log', type=str, help='Set logging level',
-						choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], default='WARNING')
-	args = parser.parse_args(passed_args)
-	interface = args.interface
-	if args.output is None:
-		output_file_mode = 'no'
-		output_filename = str()
-	else:
-		allowed_extensions = ['txt', 'json']
-		file_split = args.output.split('.')
-		file_extension = file_split[-1]
-		if file_extension in allowed_extensions:
-			output_file_mode = file_extension
-			output_filename = args.output
-		else:
-			output_file_mode = 'both'
-			output_filename = args.output
-	max_cycles = args.max_cycles
-	logging_level = getattr(logging, args.log)
-	return (interface, output_file_mode, output_filename, max_cycles, logging_level)
-
-
-def main():
-	logging.basicConfig(format='[*] %(levelname)s : %(module)s : %(message)s')
-	check_environment()
-	wh = Whoshome(parse_argv())
-	wh.cycle()
 
 
 if __name__ == '__main__':
-	main()
+	parser = argparse.ArgumentParser('Whoshome')
+	parser.add_argument('conf', type=argparse.FileType('r'), help='Path to configuration file')
+	parser.add_argument('-o', '--output', type=argparse.FileType('w'), default=None, help='Output file (JSON)')
+	args = parser.parse_args()
+	wh = Whoshome(args.conf, args.output)
