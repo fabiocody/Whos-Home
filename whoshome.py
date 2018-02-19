@@ -20,13 +20,14 @@ Person = namedtuple('Person', ['name', 'mac', 'hostname', 'counter'])
 
 class Whoshome:
 
-	def __init__(self, conf_file, output_file=None):
-		conf = json.load(conf_file)
+	def __init__(self, conf_filename, output_filename=None):
+		with open(conf_filename) as f:
+			conf = json.load(f)
 		self.__iface = netifaces.ifaddresses(conf['interface'])[netifaces.AF_INET][0]
 		self.__iface_addr = ipaddress.ip_interface(self.__iface['addr'] + '/' + self.__iface['netmask'])
 		self.__net = ipaddress.ip_network(self.__iface['addr'] + '/' + self.__iface['netmask'], False)
 		self.__max_cycles = conf['interface'] if 'interface' in conf.keys() else 30
-		self.__output_file = output_file
+		self.__output_filename = output_filename
 		self.__people = [
 			Person(name=p['name'], mac=p['mac'] if 'mac' in p.keys() else None, hostname=p['hostname'] if 'hostname' in p.keys() else None, counter=self.__max_cycles)
 			for p in conf['people']
@@ -58,8 +59,9 @@ class Whoshome:
 				for p in self.__people:
 					if p.counter < self.__max_cycles:
 						p.counter += 1
-				if self.__output_file:
-					json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname} for p in self.__people], self.__output_file)
+				if self.__output_filename:
+					with open(self.__output_filename, 'w') as f:
+						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname} for p in self.__people], f, indent=4)
 				sleep(30)
 		except KeyboardInterrupt:
 			print('\nQuit')
@@ -70,7 +72,7 @@ class Whoshome:
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser('Whoshome')
-	parser.add_argument('conf', type=argparse.FileType('r'), help='Path to configuration file')
-	parser.add_argument('-o', '--output', type=argparse.FileType('w'), default=None, help='Output file (JSON)')
+	parser.add_argument('conf', type=str, help='Path to configuration file')
+	parser.add_argument('-o', '--output', type=str, default=None, help='Output file (JSON)')
 	args = parser.parse_args()
 	Whoshome(args.conf, args.output).main()
