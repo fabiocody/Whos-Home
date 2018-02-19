@@ -51,8 +51,8 @@ class Whoshome:
 					p.counter = -1
 
 	def main(self):
-		while True:
-			try:
+		try:
+			while True:
 				self.mac_discovery()
 				self.mdns_discovery()
 				for p in self.__people:
@@ -61,11 +61,11 @@ class Whoshome:
 				if self.__output_file:
 					json.dump(self.__people, self.__output_file)
 				sleep(30)
-			except KeyboardInterrupt:
-				print('\nQuit')
-				exit()
-			except Exception as e:
-				print(e)
+		except KeyboardInterrupt:
+			print('\nQuit')
+			exit()
+		except Exception as e:
+			print(e)
 
 
 
@@ -75,4 +75,4 @@ if __name__ == '__main__':
 	parser.add_argument('conf', type=argparse.FileType('r'), help='Path to configuration file')
 	parser.add_argument('-o', '--output', type=argparse.FileType('w'), default=None, help='Output file (JSON)')
 	args = parser.parse_args()
-	wh = Whoshome(args.conf, args.output)
+	Whoshome(args.conf, args.output).main()
