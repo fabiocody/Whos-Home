@@ -30,7 +30,7 @@ class Whoshome:
 		self.__output_filename = output_filename
 		self.__verbose = verbose
 		self.__people = [
-			Person(name=p['name'], mac=p['mac'] if 'mac' in p.keys() else None, hostname=p['hostname'] if 'hostname' in p.keys() else None, counter=self.__max_cycles)
+			Person(name=p['name'], mac=p['mac'].lower() if 'mac' in p.keys() else None, hostname=p['hostname'] if 'hostname' in p.keys() else None, counter=self.__max_cycles)
 			for p in conf['people']
 		]
 
