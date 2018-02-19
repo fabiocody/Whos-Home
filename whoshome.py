@@ -64,8 +64,6 @@ class Whoshome:
 		except KeyboardInterrupt:
 			print('\nQuit')
 			exit()
-		except Exception as e:
-			print(e)
 
 
 
