@@ -49,7 +49,7 @@ class Whoshome:
 			except:
 				pass
 			for p in self.__people:
-				if hostname == p.hostname:
+				if hostname.split('.')[0] == hostname:
 					p.counter = -1
 
 	def main(self):
