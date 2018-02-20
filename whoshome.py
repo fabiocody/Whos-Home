@@ -5,6 +5,7 @@ import argparse
 import json
 import socket
 from time import sleep
+from datetime import datetime
 import ipaddress
 import netifaces
 from scapy.all import ARP
@@ -69,6 +70,8 @@ class Whoshome:
 			while True:
 				self.mac_discovery()
 				self.mdns_discovery()
+				if self.__verbose:
+					print('\n', datetime.now(), sep='')
 				for p in self.__people:
 					if p.counter < self.__max_cycles:
 						p.counter += 1
