@@ -79,7 +79,7 @@ class Whoshome:
 						print(p)
 				if self.__output_filename:
 					with open(self.__output_filename, 'w') as f:
-						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname, 'home': p.counter < self.__max_cycles} for p in self.__people], f, indent=4)
+						json.dump({'people': [{'name': p.name, 'mac': p.mac, 'hostname': p.hostname, 'home': p.counter < self.__max_cycles} for p in self.__people]}, f, indent=4)
 				sleep(30)
 		except KeyboardInterrupt:
 			print('\nQuit')
