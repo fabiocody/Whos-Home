@@ -3,9 +3,8 @@
 
 import argparse
 import json
-from time import sleep
-from collections import namedtuple
 import socket
+from time import sleep
 import ipaddress
 import netifaces
 from scapy.all import ARP
@@ -15,7 +14,20 @@ from scapy.layers.l2 import arping
 __version__ = '2.0.0a'
 
 
-Person = namedtuple('Person', ['name', 'mac', 'hostname', 'counter'])
+
+
+class Person:
+
+	def __init__(self, name, mac=None, hostname=None, starting_counter=0):
+		self.name = name
+		self.mac = mac
+		self.hostname = hostname
+		self.counter = starting_counter
+
+	def __str__(self):
+		return self.__class__.__name__ + '(' + ', '.join([str(k) + '=' + str(v) for k, v in reversed(sorted(self.__dict__.items()))]) + ')'
+
+
 
 
 class Whoshome:
@@ -30,7 +42,7 @@ class Whoshome:
 		self.__output_filename = output_filename
 		self.__verbose = verbose
 		self.__people = [
-			Person(name=p['name'], mac=p['mac'].lower() if 'mac' in p.keys() else None, hostname=p['hostname'] if 'hostname' in p.keys() else None, counter=self.__max_cycles)
+			Person(p['name'], p['mac'].lower() if 'mac' in p.keys() else None, p['hostname'] if 'hostname' in p.keys() else None, self.__max_cycles)
 			for p in conf['people']
 		]
 
@@ -46,11 +58,11 @@ class Whoshome:
 		for h in self.__net.hosts():
 			try:
 				hostname = socket.gethostbyaddr(h.exploded)[0]
+				for p in self.__people:
+					if hostname.split('.')[0].lower() == p.hostname.lower():
+						p.counter = -1
 			except:
 				pass
-			for p in self.__people:
-				if hostname.split('.')[0] == p.hostname:
-					p.counter = -1
 
 	def main(self):
 		try:
@@ -64,7 +76,7 @@ class Whoshome:
 						print(p)
 				if self.__output_filename:
 					with open(self.__output_filename, 'w') as f:
-						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname, 'counter': p.counter} for p in self.__people], f, indent=4)
+						json.dump([{'name': p.name, 'mac': p.mac, 'hostname': p.hostname, 'home': p.counter < self.__max_cycles} for p in self.__people], f, indent=4)
 				sleep(30)
 		except KeyboardInterrupt:
 			print('\nQuit')
