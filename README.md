@@ -1,5 +1,8 @@
 # Who's Home
 [![Build Status](https://travis-ci.org/fabiocody/Whos-Home.svg?branch=master)](https://travis-ci.org/fabiocody/Whos-Home)
+![GitHub release](https://img.shields.io/github/release/fabiocody/Whos-Home.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/whoshome.svg)
+![PyPI - License](https://img.shields.io/pypi/l/whoshome.svg)
 
 This tool uses ARPing to determine who is at home (i.e.: connected to the local network).
 
